@@ -1,7 +1,8 @@
 # ACI
 Asterisk REST API - Documentação Completa
+# 📘 Asterisk REST API - Documentação Completa
 
-##  Índice
+## 📋 Índice
 
 1. [Visão Geral](#visão-geral)
 2. [Autenticação](#autenticação)
@@ -29,7 +30,7 @@ API REST para gerenciamento completo de PBX Asterisk multi-tenant com suporte a:
 - ✅ **DIDs**: Roteamento de chamadas de entrada
 - ✅ **AGI Integration**: Roteamento automático via AGI
 
-**Base URL**: `http://seu-servidor`
+**Base URL**: `http://seu-servidor/api`
 
 **Versão**: 1.1.0
 
@@ -56,13 +57,13 @@ X-Company-ID: empresa1
 
 **Opção 2: Query Parameter**
 ```http
-GET /extensions?company_id=empresa1
+GET /api/extensions?company_id=empresa1
 ```
 
 ### Exemplo Completo
 
 ```bash
-curl -X GET "http://localhost/extensions" \
+curl -X GET "http://localhost/api/extensions" \
   -H "Authorization: Bearer meu_token_secreto" \
   -H "X-Company-ID: empresa1"
 ```
@@ -121,7 +122,7 @@ Verifica status da API e banco de dados.
 **Autenticação**: ❌ Não requer
 
 ```bash
-curl -X GET "http://localhost/health"
+curl -X GET "http://localhost/api/health"
 ```
 
 **Resposta**:
@@ -148,7 +149,7 @@ Gerenciamento de empresas (multi-tenant).
 **Endpoint**: `GET /companies`
 
 ```bash
-curl -X GET "http://localhost/companies" \
+curl -X GET "http://localhost/api/companies" \
   -H "Authorization: Bearer token"
 ```
 
@@ -175,7 +176,7 @@ curl -X GET "http://localhost/companies" \
 **Endpoint**: `GET /companies/with-stats`
 
 ```bash
-curl -X GET "http://localhost/companies/with-stats" \
+curl -X GET "http://localhost/api/companies/with-stats" \
   -H "Authorization: Bearer token"
 ```
 
@@ -203,7 +204,7 @@ curl -X GET "http://localhost/companies/with-stats" \
 **Endpoint**: `GET /companies/{id}`
 
 ```bash
-curl -X GET "http://localhost/companies/1" \
+curl -X GET "http://localhost/api/companies/1" \
   -H "Authorization: Bearer token"
 ```
 
@@ -214,7 +215,7 @@ curl -X GET "http://localhost/companies/1" \
 **Endpoint**: `GET /companies/{id}/stats`
 
 ```bash
-curl -X GET "http://localhost/companies/1/stats" \
+curl -X GET "http://localhost/api/companies/1/stats" \
   -H "Authorization: Bearer token"
 ```
 
@@ -249,7 +250,7 @@ curl -X GET "http://localhost/companies/1/stats" \
 - `address` (string)
 
 ```bash
-curl -X POST "http://localhost/companies" \
+curl -X POST "http://localhost/api/companies" \
   -H "Authorization: Bearer token" \
   -H "Content-Type: application/json" \
   -d '{
@@ -282,7 +283,7 @@ Valida se um company_id está disponível antes de criar.
 **Endpoint**: `POST /companies/validate`
 
 ```bash
-curl -X POST "http://localhost/companies/validate" \
+curl -X POST "http://localhost/api/companies/validate" \
   -H "Authorization: Bearer token" \
   -H "Content-Type: application/json" \
   -d '{
@@ -325,10 +326,10 @@ curl -X POST "http://localhost/companies/validate" \
 - `contact_phone`
 - `address`
 
-**Nota**: `company_id` não pode ser alterado.
+**⚠️ Nota**: `company_id` não pode ser alterado.
 
 ```bash
-curl -X PUT "http://localhost/companies/1" \
+curl -X PUT "http://localhost/api/companies/1" \
   -H "Authorization: Bearer token" \
   -H "Content-Type: application/json" \
   -d '{
@@ -344,7 +345,7 @@ curl -X PUT "http://localhost/companies/1" \
 **Endpoint**: `POST /companies/{id}/activate`
 
 ```bash
-curl -X POST "http://localhost/companies/1/activate" \
+curl -X POST "http://localhost/api/companies/1/activate" \
   -H "Authorization: Bearer token"
 ```
 
@@ -355,7 +356,7 @@ curl -X POST "http://localhost/companies/1/activate" \
 **Endpoint**: `POST /companies/{id}/deactivate`
 
 ```bash
-curl -X POST "http://localhost/companies/1/deactivate" \
+curl -X POST "http://localhost/api/companies/1/deactivate" \
   -H "Authorization: Bearer token"
 ```
 
@@ -365,10 +366,10 @@ curl -X POST "http://localhost/companies/1/deactivate" \
 
 **Endpoint**: `DELETE /companies/{id}`
 
-**Nota**: Só permite deletar se não houver recursos (ramais, troncos, filas).
+**⚠️ Nota**: Só permite deletar se não houver recursos (ramais, troncos, filas).
 
 ```bash
-curl -X DELETE "http://localhost/companies/1" \
+curl -X DELETE "http://localhost/api/companies/1" \
   -H "Authorization: Bearer token"
 ```
 
@@ -380,10 +381,10 @@ Deleta empresa e todos os recursos vinculados.
 
 **Endpoint**: `DELETE /companies/{id}/force-delete`
 
-**CUIDADO**: Ação irreversível!
+**⚠️ CUIDADO**: Ação irreversível!
 
 ```bash
-curl -X DELETE "http://localhost/companies/1/force-delete" \
+curl -X DELETE "http://localhost/api/companies/1/force-delete" \
   -H "Authorization: Bearer token"
 ```
 
@@ -410,7 +411,7 @@ Gerenciamento de números DID e roteamento de chamadas de entrada.
 **Endpoint**: `GET /dids`
 
 ```bash
-curl -X GET "http://localhost/dids" \
+curl -X GET "http://localhost/api/dids" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -442,7 +443,7 @@ Inclui nome do ramal/fila de destino.
 **Endpoint**: `GET /dids/with-details`
 
 ```bash
-curl -X GET "http://localhost/dids/with-details" \
+curl -X GET "http://localhost/api/dids/with-details" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -470,7 +471,7 @@ curl -X GET "http://localhost/dids/with-details" \
 **Endpoint**: `GET /dids/{id}`
 
 ```bash
-curl -X GET "http://localhost/dids/1" \
+curl -X GET "http://localhost/api/dids/1" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -482,7 +483,7 @@ curl -X GET "http://localhost/dids/1" \
 **Endpoint**: `GET /dids/stats`
 
 ```bash
-curl -X GET "http://localhost/dids/stats" \
+curl -X GET "http://localhost/api/dids/stats" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -510,7 +511,7 @@ curl -X GET "http://localhost/dids/stats" \
 **Tipos**: `extension`, `queue`, `ivr`, `voicemail`, `conference`
 
 ```bash
-curl -X GET "http://localhost/dids/by-type?type=extension" \
+curl -X GET "http://localhost/api/dids/by-type?type=extension" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -539,7 +540,7 @@ curl -X GET "http://localhost/dids/by-type?type=extension" \
 
 **Exemplo 1: DID para Ramal**
 ```bash
-curl -X POST "http://localhost/dids" \
+curl -X POST "http://localhost/api/dids" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -553,7 +554,7 @@ curl -X POST "http://localhost/dids" \
 
 **Exemplo 2: DID para Fila com Horário**
 ```bash
-curl -X POST "http://localhost/dids" \
+curl -X POST "http://localhost/api/dids" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -578,7 +579,7 @@ curl -X POST "http://localhost/dids" \
 **Endpoint**: `PUT /dids/{id}`
 
 ```bash
-curl -X PUT "http://localhost/dids/1" \
+curl -X PUT "http://localhost/api/dids/1" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -597,7 +598,7 @@ Duplica configuração para um novo número DID.
 **Endpoint**: `POST /dids/{id}/clone`
 
 ```bash
-curl -X POST "http://localhost/dids/1/clone" \
+curl -X POST "http://localhost/api/dids/1/clone" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -613,7 +614,7 @@ curl -X POST "http://localhost/dids/1/clone" \
 **Endpoint**: `GET /dids/{id}/test-hours`
 
 ```bash
-curl -X GET "http://localhost/dids/1/test-hours" \
+curl -X GET "http://localhost/api/dids/1/test-hours" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -637,7 +638,7 @@ curl -X GET "http://localhost/dids/1/test-hours" \
 **Endpoint**: `DELETE /dids/{id}`
 
 ```bash
-curl -X DELETE "http://localhost/dids/1" \
+curl -X DELETE "http://localhost/api/dids/1" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -646,14 +647,23 @@ curl -X DELETE "http://localhost/dids/1" \
 
 ## Extensions (Ramais)
 
-Gerenciamento de ramais PJSIP.
+Gerenciamento de ramais PJSIP com perfis otimizados.
+
+### Perfis Disponíveis
+
+| Perfil | Descrição | Uso |
+|--------|-----------|-----|
+| `standard` | Telefones IP tradicionais | Grandstream, Yealink, softphones |
+| `webrtc` | Navegadores web | Chrome, Firefox, Safari |
+
+---
 
 ### Listar Ramais
 
 **Endpoint**: `GET /extensions`
 
 ```bash
-curl -X GET "http://localhost/extensions" \
+curl -X GET "http://localhost/api/extensions" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -666,10 +676,21 @@ curl -X GET "http://localhost/extensions" \
     {
       "id": 1,
       "extension": "1000",
+      "profile": "standard",
       "caller_id_name": "João Silva",
       "caller_id_num": "1000",
       "transport": "transport-udp",
       "webrtc": 0,
+      "active": 1
+    },
+    {
+      "id": 2,
+      "extension": "2000",
+      "profile": "webrtc",
+      "caller_id_name": "Maria Santos",
+      "caller_id_num": "2000",
+      "transport": "transport-wss",
+      "webrtc": 1,
       "active": 1
     }
   ]
@@ -683,56 +704,175 @@ curl -X GET "http://localhost/extensions" \
 **Endpoint**: `GET /extension/{extension_number}`
 
 ```bash
-curl -X GET "http://localhost/extension/1000" \
+curl -X GET "http://localhost/api/extension/1000" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
 
 ---
 
-### Criar Ramal
+### Criar Ramal Standard
 
 **Endpoint**: `POST /extension`
+
+Perfil para **telefones IP tradicionais** (Grandstream, Yealink, softphones).
 
 **Campos obrigatórios:**
 - `extension` (string, numérico)
 - `password` (string, mín. 6 chars)
+- `profile` (enum: "standard")
 
 **Campos opcionais:**
 - `caller_id_name` (string)
 - `caller_id_num` (string, padrão: extension)
 - `transport` (string, padrão: transport-udp)
-- `codecs` (array, padrão: ["ulaw", "alaw", "gsm"])
-- `webrtc` (boolean, padrão: 0)
-- `max_contacts` (int, 1-10, padrão: 1)
+- `codecs` (array, padrão: ["ulaw", "alaw", "gsm", "g722"])
+- `max_contacts` (int, 1-10, padrão: 2)
 - `qualify_frequency` (int, 0-300, padrão: 60)
 
-**Exemplo 1: Ramal Básico**
+**Configurações automáticas para Standard:**
+```json
+{
+  "transport": "transport-udp",
+  "webrtc": 0,
+  "media_encryption": "no",
+  "ice_support": 0,
+  "dtls_auto_generate_cert": 0,
+  "rtcp_mux": 0,
+  "use_avpf": 0
+}
+```
+
+**Exemplo:**
 ```bash
-curl -X POST "http://localhost/extension" \
+curl -X POST "http://localhost/api/extension" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
   -d '{
     "extension": "1000",
+    "profile": "standard",
     "password": "senhaSegura123",
     "caller_id_name": "João Silva"
   }'
 ```
 
-**Exemplo 2: Ramal WebRTC**
+**Resposta:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "extension": "1000",
+    "profile": "standard",
+    "caller_id_name": "João Silva",
+    "transport": "transport-udp",
+    "webrtc": 0,
+    "created_at": "2026-01-15 10:00:00"
+  }
+}
+```
+
+---
+
+### Criar Ramal WebRTC
+
+**Endpoint**: `POST /extension`
+
+Perfil para **navegadores web** (Chrome, Firefox, Safari).
+
+**Campos obrigatórios:**
+- `extension` (string, numérico)
+- `password` (string, mín. 6 chars)
+- `profile` (enum: "webrtc")
+
+**Campos opcionais:**
+- `caller_id_name` (string)
+- `caller_id_num` (string, padrão: extension)
+- `codecs` (array, padrão: ["opus", "ulaw", "alaw"])
+- `max_contacts` (int, 1-10, padrão: 5)
+- `qualify_frequency` (int, 0-300, padrão: 30)
+
+**Configurações automáticas para WebRTC:**
+```json
+{
+  "transport": "transport-wss",
+  "webrtc": 1,
+  "media_encryption": "dtls",
+  "ice_support": 1,
+  "dtls_auto_generate_cert": 1,
+  "rtcp_mux": 1,
+  "use_avpf": 1
+}
+```
+
+**Exemplo:**
 ```bash
-curl -X POST "http://localhost/extension" \
+curl -X POST "http://localhost/api/extension" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
   -d '{
     "extension": "2000",
-    "password": "senhaSegura456",
+    "profile": "webrtc",
+    "password": "senhaWebRTC456",
+    "caller_id_name": "Maria Santos"
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 2,
+    "extension": "2000",
+    "profile": "webrtc",
     "caller_id_name": "Maria Santos",
-    "webrtc": 1,
     "transport": "transport-wss",
-    "codecs": ["opus", "ulaw"]
+    "webrtc": 1,
+    "media_encryption": "dtls",
+    "created_at": "2026-01-15 10:05:00"
+  }
+}
+```
+
+---
+
+### Personalizar Configurações
+
+Você pode sobrescrever as configurações padrão de qualquer perfil:
+
+**Standard Customizado:**
+```bash
+curl -X POST "http://localhost/api/extension" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "extension": "3000",
+    "profile": "standard",
+    "password": "senha789",
+    "caller_id_name": "Pedro Costa",
+    "codecs": ["g722", "ulaw"],
+    "max_contacts": 3,
+    "qualify_frequency": 30
+  }'
+```
+
+**WebRTC Customizado:**
+```bash
+curl -X POST "http://localhost/api/extension" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "extension": "4000",
+    "profile": "webrtc",
+    "password": "webrtc999",
+    "caller_id_name": "Ana Lima",
+    "codecs": ["opus"],
+    "max_contacts": 10
   }'
 ```
 
@@ -742,10 +882,10 @@ curl -X POST "http://localhost/extension" \
 
 **Endpoint**: `PUT /extension/{extension_number}`
 
-**Nota**: `extension` não pode ser alterado.
+**⚠️ Nota**: `extension` e `profile` não podem ser alterados.
 
 ```bash
-curl -X PUT "http://localhost/extension/1000" \
+curl -X PUT "http://localhost/api/extension/1000" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -762,10 +902,26 @@ curl -X PUT "http://localhost/extension/1000" \
 **Endpoint**: `DELETE /extension/{extension_number}`
 
 ```bash
-curl -X DELETE "http://localhost/extension/1000" \
+curl -X DELETE "http://localhost/api/extension/1000" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
+
+---
+
+### Comparação de Perfis
+
+| Característica | Standard | WebRTC |
+|----------------|----------|---------|
+| **Uso** | Telefones IP físicos | Navegadores web |
+| **Transport** | UDP (porta 5060) | WebSocket WSS (porta 8089) |
+| **Codecs** | ulaw, alaw, gsm, g722 | opus, ulaw, alaw |
+| **Encryption** | Não (opcional) | DTLS obrigatório |
+| **ICE/STUN** | Não necessário | Obrigatório |
+| **NAT** | Simples | Complexo (ICE) |
+| **Max Contacts** | 2 | 5 |
+| **Qualify** | 60s | 30s |
+| **Casos de Uso** | Escritórios, telefones fixos | Home office, atendimento remoto |
 
 ---
 
@@ -787,7 +943,7 @@ Gerenciamento de troncos SIP.
 **Endpoint**: `GET /trunks`
 
 ```bash
-curl -X GET "http://localhost/trunks" \
+curl -X GET "http://localhost/api/trunks" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -816,7 +972,7 @@ curl -X GET "http://localhost/trunks" \
 **Endpoint**: `GET /trunk/{trunk_name}`
 
 ```bash
-curl -X GET "http://localhost/trunk/trunk_operadora" \
+curl -X GET "http://localhost/api/trunk/trunk_operadora" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -830,7 +986,7 @@ curl -X GET "http://localhost/trunk/trunk_operadora" \
 **Tipos**: `registration`, `static`
 
 ```bash
-curl -X GET "http://localhost/trunks/type/registration" \
+curl -X GET "http://localhost/api/trunks/type/registration" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -860,7 +1016,7 @@ curl -X GET "http://localhost/trunks/type/registration" \
 - `context` (string, padrão: from-trunk)
 
 ```bash
-curl -X POST "http://localhost/trunk" \
+curl -X POST "http://localhost/api/trunk" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -880,7 +1036,7 @@ curl -X POST "http://localhost/trunk" \
 ### Criar Tronco Static
 
 ```bash
-curl -X POST "http://localhost/trunk" \
+curl -X POST "http://localhost/api/trunk" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -898,10 +1054,10 @@ curl -X POST "http://localhost/trunk" \
 
 **Endpoint**: `PUT /trunk/{trunk_name}`
 
-**Nota**: `trunk_name` não pode ser alterado.
+**⚠️ Nota**: `trunk_name` não pode ser alterado.
 
 ```bash
-curl -X PUT "http://localhost/trunk/trunk_operadora" \
+curl -X PUT "http://localhost/api/trunk/trunk_operadora" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -918,7 +1074,7 @@ curl -X PUT "http://localhost/trunk/trunk_operadora" \
 **Endpoint**: `DELETE /trunk/{trunk_name}`
 
 ```bash
-curl -X DELETE "http://localhost/trunk/trunk_operadora" \
+curl -X DELETE "http://localhost/api/trunk/trunk_operadora" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -946,7 +1102,7 @@ Gerenciamento de filas de atendimento.
 **Endpoint**: `GET /queues`
 
 ```bash
-curl -X GET "http://localhost/queues" \
+curl -X GET "http://localhost/api/queues" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -976,7 +1132,7 @@ curl -X GET "http://localhost/queues" \
 **Endpoint**: `GET /queue/{queue_name}`
 
 ```bash
-curl -X GET "http://localhost/queue/suporte" \
+curl -X GET "http://localhost/api/queue/suporte" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -1002,7 +1158,7 @@ curl -X GET "http://localhost/queue/suporte" \
 - `context` (string)
 
 ```bash
-curl -X POST "http://localhost/queue" \
+curl -X POST "http://localhost/api/queue" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -1023,7 +1179,7 @@ curl -X POST "http://localhost/queue" \
 **Endpoint**: `PUT /queue/{queue_name}`
 
 ```bash
-curl -X PUT "http://localhost/queue/suporte" \
+curl -X PUT "http://localhost/api/queue/suporte" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -1040,7 +1196,7 @@ curl -X PUT "http://localhost/queue/suporte" \
 **Endpoint**: `DELETE /queue/{queue_name}`
 
 ```bash
-curl -X DELETE "http://localhost/queue/suporte" \
+curl -X DELETE "http://localhost/api/queue/suporte" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -1056,7 +1212,7 @@ Gerenciamento de membros (ramais) nas filas.
 **Endpoint**: `GET /queue/{queue_name}/members`
 
 ```bash
-curl -X GET "http://localhost/queue/suporte/members" \
+curl -X GET "http://localhost/api/queue/suporte/members" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -1091,7 +1247,7 @@ curl -X GET "http://localhost/queue/suporte/members" \
 - `member_name` (string)
 
 ```bash
-curl -X POST "http://localhost/queue/suporte/member" \
+curl -X POST "http://localhost/api/queue/suporte/member" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -1108,7 +1264,7 @@ curl -X POST "http://localhost/queue/suporte/member" \
 **Endpoint**: `DELETE /queue/{queue_name}/member/{extension}`
 
 ```bash
-curl -X DELETE "http://localhost/queue/suporte/member/1000" \
+curl -X DELETE "http://localhost/api/queue/suporte/member/1000" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -1123,7 +1279,7 @@ curl -X DELETE "http://localhost/queue/suporte/member/1000" \
 - `reason` (string) - Motivo da pausa
 
 ```bash
-curl -X POST "http://localhost/queue/suporte/member/1000/pause" \
+curl -X POST "http://localhost/api/queue/suporte/member/1000/pause" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -1139,7 +1295,7 @@ curl -X POST "http://localhost/queue/suporte/member/1000/pause" \
 **Endpoint**: `POST /queue/{queue_name}/member/{extension}/unpause`
 
 ```bash
-curl -X POST "http://localhost/queue/suporte/member/1000/unpause" \
+curl -X POST "http://localhost/api/queue/suporte/member/1000/unpause" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -1192,22 +1348,27 @@ curl -X POST "http://localhost/queue/suporte/member/1000/unpause" \
 
 ```bash
 # 1. Criar empresa
-curl -X POST "http://localhost/companies" \
+curl -X POST "http://localhost/api/companies" \
   -H "Authorization: Bearer token" \
   -d '{"company_id":"acme","name":"ACME Corp"}'
 
-# 2. Criar ramal
-curl -X POST "http://localhost/extension" \
+# 2. Criar ramal standard (telefone IP)
+curl -X POST "http://localhost/api/extension" \
   -H "X-Company-ID: acme" \
-  -d '{"extension":"1000","password":"senha123","caller_id_name":"Recepção"}'
+  -d '{"extension":"1000","profile":"standard","password":"senha123","caller_id_name":"Recepção"}'
 
-# 3. Criar tronco
-curl -X POST "http://localhost/trunk" \
+# 3. Criar ramal webrtc (navegador)
+curl -X POST "http://localhost/api/extension" \
+  -H "X-Company-ID: acme" \
+  -d '{"extension":"2000","profile":"webrtc","password":"webrtc123","caller_id_name":"Atendente Remoto"}'
+
+# 4. Criar tronco
+curl -X POST "http://localhost/api/trunk" \
   -H "X-Company-ID: acme" \
   -d '{"trunk_name":"trunk_op","trunk_type":"registration","host":"sip.op.com.br","username":"user","password":"pass"}'
 
-# 4. Criar DID
-curl -X POST "http://localhost/dids" \
+# 5. Criar DID
+curl -X POST "http://localhost/api/dids" \
   -H "X-Company-ID: acme" \
   -d '{"did_number":"06132334455","destination_type":"extension","destination":"1000"}'
 ```
@@ -1217,37 +1378,105 @@ curl -X POST "http://localhost/dids" \
 ### Exemplo 2: Setup de Call Center
 
 ```bash
-# 1. Criar filas
-curl -X POST "http://localhost/queue" \
+# 1. Criar fila
+curl -X POST "http://localhost/api/queue" \
   -H "X-Company-ID: empresa1" \
   -d '{"queue_name":"vendas","strategy":"ringall"}'
 
-curl -X POST "http://localhost/queue" \
+# 2. Criar ramais standard (escritório)
+curl -X POST "http://localhost/api/extension" \
   -H "X-Company-ID: empresa1" \
-  -d '{"queue_name":"suporte","strategy":"leastrecent"}'
+  -d '{"extension":"1001","profile":"standard","password":"senha1001","caller_id_name":"Vendedor 1"}'
 
-# 2. Adicionar ramais às filas
-curl -X POST "http://localhost/queue/vendas/member" \
+curl -X POST "http://localhost/api/extension" \
+  -H "X-Company-ID: empresa1" \
+  -d '{"extension":"1002","profile":"standard","password":"senha1002","caller_id_name":"Vendedor 2"}'
+
+# 3. Criar ramais webrtc (home office)
+curl -X POST "http://localhost/api/extension" \
+  -H "X-Company-ID: empresa1" \
+  -d '{"extension":"2001","profile":"webrtc","password":"webrtc2001","caller_id_name":"Vendedor Remoto 1"}'
+
+curl -X POST "http://localhost/api/extension" \
+  -H "X-Company-ID: empresa1" \
+  -d '{"extension":"2002","profile":"webrtc","password":"webrtc2002","caller_id_name":"Vendedor Remoto 2"}'
+
+# 4. Adicionar à fila
+curl -X POST "http://localhost/api/queue/vendas/member" \
   -H "X-Company-ID: empresa1" \
   -d '{"extension":"1001"}'
 
-curl -X POST "http://localhost/queue/vendas/member" \
+curl -X POST "http://localhost/api/queue/vendas/member" \
   -H "X-Company-ID: empresa1" \
   -d '{"extension":"1002"}'
 
-# 3. Mapear DIDs para filas
-curl -X POST "http://localhost/dids" \
+curl -X POST "http://localhost/api/queue/vendas/member" \
+  -H "X-Company-ID: empresa1" \
+  -d '{"extension":"2001"}'
+
+curl -X POST "http://localhost/api/queue/vendas/member" \
+  -H "X-Company-ID: empresa1" \
+  -d '{"extension":"2002"}'
+
+# 5. Mapear DID para fila
+curl -X POST "http://localhost/api/dids" \
   -H "X-Company-ID: empresa1" \
   -d '{"did_number":"06132334466","destination_type":"queue","destination":"vendas"}'
 ```
 
 ---
 
-### Exemplo 3: Horário de Atendimento
+### Exemplo 3: Sistema Híbrido (Escritório + Home Office)
+
+```bash
+# Escritório - 10 ramais standard (1000-1009)
+for i in {1000..1009}; do
+  curl -X POST "http://localhost/api/extension" \
+    -H "Authorization: Bearer token" \
+    -H "X-Company-ID: empresa1" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"extension\": \"$i\",
+      \"profile\": \"standard\",
+      \"password\": \"senha${i}\",
+      \"caller_id_name\": \"Escritório ${i}\"
+    }"
+done
+
+# Home Office - 10 ramais webrtc (2000-2009)
+for i in {2000..2009}; do
+  curl -X POST "http://localhost/api/extension" \
+    -H "Authorization: Bearer token" \
+    -H "X-Company-ID: empresa1" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"extension\": \"$i\",
+      \"profile\": \"webrtc\",
+      \"password\": \"webrtc${i}\",
+      \"caller_id_name\": \"Remoto ${i}\"
+    }"
+done
+
+# Criar fila com todos
+curl -X POST "http://localhost/api/queue" \
+  -H "X-Company-ID: empresa1" \
+  -d '{"queue_name":"atendimento","strategy":"leastrecent"}'
+
+# Adicionar todos à fila (script)
+for i in {1000..1009} {2000..2009}; do
+  curl -X POST "http://localhost/api/queue/atendimento/member" \
+    -H "X-Company-ID: empresa1" \
+    -d "{\"extension\":\"$i\"}"
+done
+```
+
+---
+
+### Exemplo 4: Horário de Atendimento
 
 ```bash
 # DID com horário comercial
-curl -X POST "http://localhost/dids" \
+curl -X POST "http://localhost/api/dids" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
