@@ -738,7 +738,8 @@ Perfil para **telefones IP tradicionais** (Grandstream, Yealink, softphones).
   "ice_support": 0,
   "dtls_auto_generate_cert": 0,
   "rtcp_mux": 0,
-  "use_avpf": 0
+  "use_avpf": 0,
+  "record": 0, (opcional ativar gravação 1, desativar 0)
 }
 ```
 
@@ -801,7 +802,8 @@ Perfil para **navegadores web** (Chrome, Firefox, Safari).
   "ice_support": 1,
   "dtls_auto_generate_cert": 1,
   "rtcp_mux": 1,
-  "use_avpf": 1
+  "use_avpf": 1,
+  "record": 0, (opcional ativar gravação 1, desativar 0)
 }
 ```
 
