@@ -1,5 +1,5 @@
-# ACI
-Asterisk REST API - Documentação Completa
+#  Asterisk REST API - Documentação Completa
+
 
 ## Índice
 
@@ -13,8 +13,10 @@ Asterisk REST API - Documentação Completa
 8. [Trunks (Troncos)](#trunks-troncos)
 9. [Queues (Filas)](#queues-filas)
 10. [Queue Members](#queue-members)
-11. [Códigos de Erro](#códigos-de-erro)
-12. [Exemplos Completos](#exemplos-completos)
+11. [IVRs (URAs)](#ivrs-uras)
+12. [IVR Options (Opções)](#ivr-options-opções)
+13. [Códigos de Erro](#códigos-de-erro)
+14. [Exemplos Completos](#exemplos-completos)
 
 ---
 
@@ -27,6 +29,7 @@ API REST para gerenciamento completo de PBX Asterisk multi-tenant com suporte a:
 - ✅ **Troncos**: SIP registration e static
 - ✅ **Filas**: Criação e gerenciamento de queues
 - ✅ **DIDs**: Roteamento de chamadas de entrada
+- ✅ **IVRs (URAs)**: Menus interativos com DTMF e sub-menus
 - ✅ **AGI Integration**: Roteamento automático via AGI
 
 **Base URL**: `http://seu-servidor`
@@ -738,8 +741,7 @@ Perfil para **telefones IP tradicionais** (Grandstream, Yealink, softphones).
   "ice_support": 0,
   "dtls_auto_generate_cert": 0,
   "rtcp_mux": 0,
-  "use_avpf": 0,
-  "record": 0, (opcional ativar gravação 1, desativar 0)
+  "use_avpf": 0
 }
 ```
 
@@ -802,8 +804,7 @@ Perfil para **navegadores web** (Chrome, Firefox, Safari).
   "ice_support": 1,
   "dtls_auto_generate_cert": 1,
   "rtcp_mux": 1,
-  "use_avpf": 1,
-  "record": 0, (opcional ativar gravação 1, desativar 0)
+  "use_avpf": 1
 }
 ```
 
@@ -1303,6 +1304,507 @@ curl -X POST "http://localhost/queue/suporte/member/1000/unpause" \
 
 ---
 
+## IVRs (URAs)
+
+Gerenciamento de IVRs (Interactive Voice Response) - Unidades de Resposta Audível.
+
+Uma IVR é um menu interativo que permite aos chamadores navegar por opções usando o teclado do telefone (DTMF).
+
+### Fluxo de Funcionamento
+
+```
+1. Chamada entra no DID mapeado para IVR
+2. Áudio de boas-vindas é reproduzido
+3. Sistema aguarda dígito DTMF (timeout configurável)
+4. Dígito é processado e chamada roteada para destino
+5. Se inválido/timeout, comportamento configurável (repetir, hangup, outro destino)
+```
+
+### Tipos de Ação (action_type)
+
+| Tipo | Descrição |
+|------|-----------|
+| `queue` | Direciona para fila de atendimento |
+| `extension` | Direciona para ramal direto |
+| `ivr` | Direciona para outra IVR (sub-menu) |
+| `hangup` | Desliga a chamada |
+
+### Tipos de Destino para Timeout/Invalid
+
+| Tipo | Descrição |
+|------|-----------|
+| `hangup` | Desliga a chamada |
+| `repeat` | Repete o menu (apenas para invalid) |
+| `queue` | Direciona para fila |
+| `extension` | Direciona para ramal |
+| `ivr` | Direciona para outra IVR |
+
+---
+
+### Listar IVRs
+
+**Endpoint**: `GET /ivrs`
+
+```bash
+curl -X GET "http://localhost/ivrs" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+**Resposta**:
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "company_id": "empresa1",
+      "ivr_name": "menu_principal",
+      "description": "Menu principal de atendimento",
+      "welcome_audio_url": "http://example.com/audios/bemvindo.wav",
+      "timeout": 5,
+      "max_retries": 3,
+      "timeout_destination_type": "queue",
+      "timeout_destination": "suporte",
+      "invalid_destination_type": "repeat",
+      "active": 1,
+      "created_at": "2026-02-04 10:00:00"
+    }
+  ]
+}
+```
+
+---
+
+### Obter IVR
+
+**Endpoint**: `GET /ivrs/{id}`
+
+Retorna IVR com todas as opções configuradas.
+
+```bash
+curl -X GET "http://localhost/ivrs/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+**Resposta**:
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "company_id": "empresa1",
+    "ivr_name": "menu_principal",
+    "description": "Menu principal de atendimento",
+    "welcome_audio_url": "http://example.com/audios/bemvindo.wav",
+    "timeout": 5,
+    "max_retries": 3,
+    "timeout_destination_type": "queue",
+    "timeout_destination": "suporte",
+    "invalid_destination_type": "repeat",
+    "invalid_destination": null,
+    "active": 1,
+    "options": [
+      {
+        "id": 1,
+        "digit": "1",
+        "action_type": "queue",
+        "destination": "comercial",
+        "audio_url": null,
+        "description": "Setor Comercial"
+      },
+      {
+        "id": 2,
+        "digit": "2",
+        "action_type": "queue",
+        "destination": "suporte",
+        "audio_url": null,
+        "description": "Suporte Técnico"
+      },
+      {
+        "id": 3,
+        "digit": "0",
+        "action_type": "extension",
+        "destination": "1000",
+        "audio_url": null,
+        "description": "Falar com atendente"
+      }
+    ]
+  }
+}
+```
+
+---
+
+### Criar IVR
+
+**Endpoint**: `POST /ivrs`
+
+**Campos obrigatórios:**
+- `ivr_name` (string, alfanumérico + _ -)
+
+**Campos opcionais:**
+- `description` (string)
+- `welcome_audio_url` (string, URL do áudio de boas-vindas)
+- `timeout` (int, 1-60, padrão: 5) - segundos para aguardar DTMF
+- `max_retries` (int, 1-10, padrão: 3) - tentativas antes de destino final
+- `timeout_destination_type` (enum, padrão: hangup)
+- `timeout_destination` (string)
+- `invalid_destination_type` (enum, padrão: repeat)
+- `invalid_destination` (string)
+- `options` (array) - opções do menu
+
+**Exemplo Completo:**
+```bash
+curl -X POST "http://localhost/ivrs" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ivr_name": "menu_principal",
+    "description": "Menu principal de atendimento",
+    "welcome_audio_url": "http://example.com/audios/bemvindo.wav",
+    "timeout": 5,
+    "max_retries": 3,
+    "timeout_destination_type": "queue",
+    "timeout_destination": "suporte",
+    "invalid_destination_type": "repeat",
+    "options": [
+      {
+        "digit": "1",
+        "action_type": "queue",
+        "destination": "comercial",
+        "description": "Setor Comercial"
+      },
+      {
+        "digit": "2",
+        "action_type": "queue",
+        "destination": "suporte",
+        "description": "Suporte Técnico"
+      },
+      {
+        "digit": "3",
+        "action_type": "extension",
+        "destination": "1000",
+        "description": "Falar com atendente"
+      },
+      {
+        "digit": "9",
+        "action_type": "hangup",
+        "description": "Encerrar chamada"
+      }
+    ]
+  }'
+```
+
+**Exemplo Simples:**
+```bash
+curl -X POST "http://localhost/ivrs" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ivr_name": "menu_simples",
+    "welcome_audio_url": "http://example.com/audios/menu.wav",
+    "options": [
+      {"digit": "1", "action_type": "queue", "destination": "vendas"},
+      {"digit": "2", "action_type": "queue", "destination": "suporte"},
+      {"digit": "9", "action_type": "hangup"}
+    ]
+  }'
+```
+
+---
+
+### Atualizar IVR
+
+**Endpoint**: `PUT /ivrs/{id}`
+
+**⚠️ Nota**: `ivr_name` não pode ser alterado.
+
+**Atualizar apenas configurações (sem alterar opções):**
+```bash
+curl -X PUT "http://localhost/ivrs/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "Menu atualizado",
+    "timeout": 10,
+    "max_retries": 5
+  }'
+```
+
+**Atualizar substituindo todas as opções:**
+```bash
+curl -X PUT "http://localhost/ivrs/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "Menu com novas opções",
+    "options": [
+      {"digit": "1", "action_type": "queue", "destination": "vendas"},
+      {"digit": "2", "action_type": "queue", "destination": "financeiro"},
+      {"digit": "3", "action_type": "queue", "destination": "suporte"},
+      {"digit": "0", "action_type": "extension", "destination": "1000"}
+    ]
+  }'
+```
+
+---
+
+### Deletar IVR
+
+**Endpoint**: `DELETE /ivrs/{id}`
+
+```bash
+curl -X DELETE "http://localhost/ivrs/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+---
+
+## IVR Options (Opções)
+
+Gerenciamento individual de opções (dígitos DTMF) de uma IVR.
+
+### Dígitos Válidos
+
+`0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `*`, `#`
+
+---
+
+### Listar Opções da IVR
+
+**Endpoint**: `GET /ivrs/{id}/options`
+
+```bash
+curl -X GET "http://localhost/ivrs/1/options" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+**Resposta**:
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "ivr_id": 1,
+      "digit": "1",
+      "action_type": "queue",
+      "destination": "comercial",
+      "audio_url": null,
+      "description": "Setor Comercial",
+      "active": 1
+    },
+    {
+      "id": 2,
+      "ivr_id": 1,
+      "digit": "2",
+      "action_type": "queue",
+      "destination": "suporte",
+      "audio_url": null,
+      "description": "Suporte Técnico",
+      "active": 1
+    }
+  ]
+}
+```
+
+---
+
+### Adicionar Opção
+
+**Endpoint**: `POST /ivrs/{id}/options`
+
+**Campos obrigatórios:**
+- `digit` (char, 0-9, *, #)
+- `action_type` (enum: queue, extension, ivr, hangup)
+- `destination` (string, obrigatório exceto para hangup)
+
+**Campos opcionais:**
+- `description` (string)
+- `audio_url` (string, áudio a reproduzir antes de rotear)
+
+```bash
+curl -X POST "http://localhost/ivrs/1/options" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "digit": "5",
+    "action_type": "queue",
+    "destination": "financeiro",
+    "description": "Setor Financeiro",
+    "audio_url": "http://example.com/audios/financeiro.wav"
+  }'
+```
+
+---
+
+### Obter Opção por Dígito
+
+**Endpoint**: `GET /ivrs/{id}/{digit}`
+
+```bash
+curl -X GET "http://localhost/ivrs/1/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+**Resposta**:
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "ivr_id": 1,
+    "digit": "1",
+    "action_type": "queue",
+    "destination": "comercial",
+    "audio_url": null,
+    "description": "Setor Comercial",
+    "active": 1
+  }
+}
+```
+
+---
+
+### Atualizar Opção
+
+**Endpoint**: `PUT /ivrs/{id}/{digit}`
+
+```bash
+curl -X PUT "http://localhost/ivrs/1/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action_type": "extension",
+    "destination": "1001",
+    "description": "Atendente VIP"
+  }'
+```
+
+---
+
+### Remover Opção
+
+**Endpoint**: `DELETE /ivrs/{id}/{digit}`
+
+```bash
+curl -X DELETE "http://localhost/ivrs/1/5" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+---
+
+### Remover Todas as Opções
+
+**Endpoint**: `DELETE /ivrs/{id}/options`
+
+```bash
+curl -X DELETE "http://localhost/ivrs/1/options" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+---
+
+### Mapear DID para IVR
+
+Para que chamadas sejam direcionadas para uma IVR, é necessário mapear um DID.
+
+**Endpoint**: `POST /dids`
+
+```bash
+curl -X POST "http://localhost/dids" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "did_number": "06132334455",
+    "destination_type": "ivr",
+    "destination": "menu_principal",
+    "description": "DID principal com IVR"
+  }'
+```
+
+---
+
+### Exemplo Completo: Setup de IVR com Sub-menus
+
+```bash
+# 1. Criar IVR principal
+curl -X POST "http://localhost/ivrs" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ivr_name": "menu_principal",
+    "welcome_audio_url": "http://example.com/audios/bemvindo.wav",
+    "timeout": 5,
+    "max_retries": 3,
+    "timeout_destination_type": "queue",
+    "timeout_destination": "recepcao",
+    "options": [
+      {"digit": "1", "action_type": "ivr", "destination": "menu_comercial", "description": "Comercial"},
+      {"digit": "2", "action_type": "ivr", "destination": "menu_suporte", "description": "Suporte"},
+      {"digit": "0", "action_type": "extension", "destination": "1000", "description": "Atendente"}
+    ]
+  }'
+
+# 2. Criar sub-menu Comercial
+curl -X POST "http://localhost/ivrs" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ivr_name": "menu_comercial",
+    "welcome_audio_url": "http://example.com/audios/comercial.wav",
+    "options": [
+      {"digit": "1", "action_type": "queue", "destination": "vendas", "description": "Vendas"},
+      {"digit": "2", "action_type": "queue", "destination": "orcamentos", "description": "Orçamentos"},
+      {"digit": "9", "action_type": "ivr", "destination": "menu_principal", "description": "Voltar"}
+    ]
+  }'
+
+# 3. Criar sub-menu Suporte
+curl -X POST "http://localhost/ivrs" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ivr_name": "menu_suporte",
+    "welcome_audio_url": "http://example.com/audios/suporte.wav",
+    "options": [
+      {"digit": "1", "action_type": "queue", "destination": "suporte_tecnico", "description": "Técnico"},
+      {"digit": "2", "action_type": "queue", "destination": "suporte_financeiro", "description": "Financeiro"},
+      {"digit": "9", "action_type": "ivr", "destination": "menu_principal", "description": "Voltar"}
+    ]
+  }'
+
+# 4. Mapear DID para IVR principal
+curl -X POST "http://localhost/dids" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "did_number": "06132334455",
+    "destination_type": "ivr",
+    "destination": "menu_principal"
+  }'
+```
+
+---
+
 ## Códigos de Erro
 
 | Código | Descrição |
@@ -1496,7 +1998,100 @@ curl -X POST "http://localhost/dids" \
 
 ---
 
+### Exemplo 5: Setup Completo com IVR
 
-**Versão**: 1.4.0  
-**Última atualização**: 2026-01-16
+```bash
+# 1. Criar empresa
+curl -X POST "http://localhost/companies" \
+  -H "Authorization: Bearer token" \
+  -H "Content-Type: application/json" \
+  -d '{"company_id":"clinica","name":"Clinica Saúde Total"}'
+
+# 2. Criar ramais
+curl -X POST "http://localhost/extension" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: clinica" \
+  -H "Content-Type: application/json" \
+  -d '{"extension":"1000","profile":"standard","password":"senha1000","caller_id_name":"Recepção"}'
+
+# 3. Criar filas
+curl -X POST "http://localhost/queue" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: clinica" \
+  -H "Content-Type: application/json" \
+  -d '{"queue_name":"agendamentos","strategy":"ringall"}'
+
+curl -X POST "http://localhost/queue" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: clinica" \
+  -H "Content-Type: application/json" \
+  -d '{"queue_name":"laboratorio","strategy":"rrmemory"}'
+
+# 4. Criar IVR principal
+curl -X POST "http://localhost/ivrs" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: clinica" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ivr_name": "menu_clinica",
+    "description": "Menu principal da clínica",
+    "welcome_audio_url": "http://example.com/audios/clinica_bemvindo.wav",
+    "timeout": 8,
+    "max_retries": 3,
+    "timeout_destination_type": "extension",
+    "timeout_destination": "1000",
+    "invalid_destination_type": "repeat",
+    "options": [
+      {"digit": "1", "action_type": "queue", "destination": "agendamentos", "description": "Agendar consulta"},
+      {"digit": "2", "action_type": "queue", "destination": "laboratorio", "description": "Resultados de exames"},
+      {"digit": "3", "action_type": "extension", "destination": "1000", "description": "Falar com recepção"},
+      {"digit": "9", "action_type": "hangup", "description": "Encerrar"}
+    ]
+  }'
+
+# 5. Criar tronco
+curl -X POST "http://localhost/trunk" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: clinica" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "trunk_name": "trunk_clinica",
+    "trunk_type": "registration",
+    "host": "sip.operadora.com.br",
+    "username": "clinica_user",
+    "password": "clinica_pass"
+  }'
+
+# 6. Mapear DID para IVR (chamadas entram na URA)
+curl -X POST "http://localhost/dids" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: clinica" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "did_number": "06133445566",
+    "destination_type": "ivr",
+    "destination": "menu_clinica",
+    "description": "Telefone principal - IVR",
+    "business_hours_enabled": 1,
+    "business_hours_start": "07:00:00",
+    "business_hours_end": "19:00:00",
+    "business_days": "mon,tue,wed,thu,fri,sat",
+    "after_hours_destination_type": "hangup"
+  }'
+
+# 7. Verificar tudo
+curl -X GET "http://localhost/ivrs" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: clinica"
+
+curl -X GET "http://localhost/dids/by-type?type=ivr" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: clinica"
+```
+
+---
+
+
+**Versão**: 1.5.0
+**Última atualização**: 2026-02-05
 **By: Israel Azevedo**
