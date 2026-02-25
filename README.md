@@ -9,7 +9,8 @@
 4. [System](#system)
 5. [Companies (Empresas)](#companies-empresas)
 6. [DIDs (Mapeamento de Entrada)](#dids-mapeamento-de-entrada)
-7. [Extensions (Ramais)](#extensions-ramais)
+7. [DID Schedules (Horarios Comerciais)](#did-schedules-horarios-comerciais)
+8. [Extensions (Ramais)](#extensions-ramais)
 8. [Trunks (Troncos)](#trunks-troncos)
 9. [Queues (Filas)](#queues-filas)
 10. [Queue Members](#queue-members)
@@ -628,7 +629,18 @@ curl -X GET "http://localhost/dids/1/test-hours" \
   "data": {
     "is_business_hours": true,
     "current_time": "2026-01-14 14:30:00",
-    "day_of_week": "Tuesday"
+    "day_of_week": "Tuesday",
+    "schedules_count": 3,
+    "schedules": [
+      {
+        "id": 1,
+        "label": "Dias uteis",
+        "days": "mon,tue,wed,thu,fri",
+        "time_start": "08:00:00",
+        "time_end": "22:00:00",
+        "priority": 10
+      }
+    ]
   }
 }
 ```
@@ -641,6 +653,144 @@ curl -X GET "http://localhost/dids/1/test-hours" \
 
 ```bash
 curl -X DELETE "http://localhost/dids/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+---
+
+## DID Schedules (Horarios Comerciais)
+
+Gerenciamento de multiplos horarios comerciais por DID. Permite configurar faixas de horario diferentes para cada dia da semana.
+
+> **Compatibilidade:** Se `business_hours_enabled = 1` e nenhum schedule existir, o sistema usa as colunas legadas (`business_hours_start`, `business_hours_end`, `business_days`).
+
+### Listar Schedules
+
+**Endpoint**: `GET /dids/{id}/schedules`
+
+```bash
+curl -X GET "http://localhost/dids/1/schedules" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+**Resposta**:
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "did_mapping_id": 1,
+      "label": "Dias uteis",
+      "days": "mon,tue,wed,thu,fri",
+      "time_start": "08:00:00",
+      "time_end": "22:00:00",
+      "priority": 10,
+      "active": 1
+    },
+    {
+      "id": 2,
+      "did_mapping_id": 1,
+      "label": "Sabado",
+      "days": "sat",
+      "time_start": "08:00:00",
+      "time_end": "18:00:00",
+      "priority": 20,
+      "active": 1
+    },
+    {
+      "id": 3,
+      "did_mapping_id": 1,
+      "label": "Domingo",
+      "days": "sun",
+      "time_start": "08:00:00",
+      "time_end": "12:00:00",
+      "priority": 30,
+      "active": 1
+    }
+  ]
+}
+```
+
+---
+
+### Obter Schedule
+
+**Endpoint**: `GET /dids/{id}/schedules/{scheduleId}`
+
+```bash
+curl -X GET "http://localhost/dids/1/schedules/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+---
+
+### Criar Schedule
+
+**Endpoint**: `POST /dids/{id}/schedules`
+
+**Campos obrigatorios:**
+- `days` (string) - Dias separados por virgula: mon,tue,wed,thu,fri,sat,sun
+
+**Campos opcionais:**
+- `label` (string) - Nome/rotulo do horario
+- `time_start` (time, padrao: 08:00:00)
+- `time_end` (time, padrao: 18:00:00)
+- `priority` (int, 0-100, padrao: 10) - Menor = maior prioridade
+
+```bash
+curl -X POST "http://localhost/dids/1/schedules" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "label": "Dias uteis",
+    "days": "mon,tue,wed,thu,fri",
+    "time_start": "08:00:00",
+    "time_end": "22:00:00",
+    "priority": 10
+  }'
+```
+
+---
+
+### Atualizar Schedule
+
+**Endpoint**: `PUT /dids/{id}/schedules/{scheduleId}`
+
+```bash
+curl -X PUT "http://localhost/dids/1/schedules/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "time_end": "20:00:00"
+  }'
+```
+
+---
+
+### Deletar Schedule
+
+**Endpoint**: `DELETE /dids/{id}/schedules/{scheduleId}`
+
+```bash
+curl -X DELETE "http://localhost/dids/1/schedules/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+---
+
+### Deletar Todos os Schedules
+
+**Endpoint**: `DELETE /dids/{id}/schedules`
+
+```bash
+curl -X DELETE "http://localhost/dids/1/schedules" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
