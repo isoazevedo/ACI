@@ -11,13 +11,14 @@
 6. [DIDs (Mapeamento de Entrada)](#dids-mapeamento-de-entrada)
 7. [DID Schedules (Horarios Comerciais)](#did-schedules-horarios-comerciais)
 8. [Extensions (Ramais)](#extensions-ramais)
-8. [Trunks (Troncos)](#trunks-troncos)
-9. [Queues (Filas)](#queues-filas)
-10. [Queue Members](#queue-members)
-11. [IVRs (URAs)](#ivrs-uras)
-12. [IVR Options (Opções)](#ivr-options-opções)
-13. [Códigos de Erro](#códigos-de-erro)
-14. [Exemplos Completos](#exemplos-completos)
+9. [Trunks (Troncos)](#trunks-troncos)
+10. [Queues (Filas)](#queues-filas)
+11. [Queue Members](#queue-members)
+12. [Queue Routes (Rotas de Discagem)](#queue-routes-rotas-de-discagem)
+13. [IVRs (URAs)](#ivrs-uras)
+14. [IVR Options (Opções)](#ivr-options-opções)
+15. [Códigos de Erro](#códigos-de-erro)
+16. [Exemplos Completos](#exemplos-completos)
 
 ---
 
@@ -30,12 +31,13 @@ API REST para gerenciamento completo de PBX Asterisk multi-tenant com suporte a:
 - ✅ **Troncos**: SIP registration e static
 - ✅ **Filas**: Criação e gerenciamento de queues
 - ✅ **DIDs**: Roteamento de chamadas de entrada
+- ✅ **Queue Routes**: Discagem interna para filas via shortcode (#600, *600)
 - ✅ **IVRs (URAs)**: Menus interativos com DTMF e sub-menus
 - ✅ **AGI Integration**: Roteamento automático via AGI
 
 **Base URL**: `http://seu-servidor`
 
-**Versão**: 1.1.0
+**Versão**: 1.6.0
 
 ---
 
@@ -1454,6 +1456,217 @@ curl -X POST "http://localhost/queue/suporte/member/1000/unpause" \
 
 ---
 
+## Queue Routes (Rotas de Discagem)
+
+Gerenciamento de rotas de discagem interna para filas de atendimento.
+
+Permite que ramais internos disquem um shortcode (ex: `#600`) e sejam direcionados para a fila de atendimento correspondente da sua própria empresa. O AGI identifica automaticamente a empresa pelo ramal chamador, garantindo o isolamento multi-tenant.
+
+### Fluxo de Funcionamento
+
+```
+Ramal 1001 (empresa X) disca #600
+  ↓
+Dialplan captura padrão _#XX.
+  ↓
+AGI: get-queue-by-extension.php
+  ├─ Identifica empresa X pelo ramal 1001
+  └─ Busca queue_routes WHERE company_id = X AND shortcode = '#600'
+  ↓
+Queue(suporte, tThHc, ,, 300,, atendimento)
+```
+
+### Formato do Shortcode
+
+| Prefixo | Exemplo | Quando usar |
+|---------|---------|-------------|
+| `#` | `#600`, `#700` | Padrão — maioria dos telefones IP |
+| `*` | `*600`, `*700` | Alternativa — telefones que usam `#` como fim de discagem |
+
+O shortcode deve ter entre 2 e 6 dígitos após o prefixo.
+
+---
+
+### Listar Rotas
+
+**Endpoint**: `GET /queue-routes`
+
+Retorna todas as rotas da empresa com detalhes da fila vinculada.
+
+```bash
+curl -X GET "http://localhost/queue-routes" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+**Resposta**:
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "company_id": "empresa1",
+      "shortcode": "#600",
+      "queue_id": 3,
+      "description": "Fila Suporte",
+      "active": 1,
+      "queue_name": "suporte",
+      "strategy": "ringall",
+      "queue_timeout": 30,
+      "created_at": "2026-05-12 10:00:00"
+    }
+  ]
+}
+```
+
+---
+
+### Obter Rota
+
+**Endpoint**: `GET /queue-routes/{id}`
+
+```bash
+curl -X GET "http://localhost/queue-routes/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+---
+
+### Criar Rota
+
+**Endpoint**: `POST /queue-routes`
+
+**Campos obrigatórios:**
+- `shortcode` (string) — deve iniciar com `#` ou `*` seguido de 2-6 dígitos
+- `queue_id` (int) — ID da fila de destino (deve pertencer à empresa)
+
+**Campos opcionais:**
+- `description` (string) — descrição da rota
+
+```bash
+curl -X POST "http://localhost/queue-routes" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "shortcode": "#600",
+    "queue_id": 3,
+    "description": "Fila Suporte"
+  }'
+```
+
+**Resposta**:
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "company_id": "empresa1",
+    "shortcode": "#600",
+    "queue_id": 3,
+    "description": "Fila Suporte",
+    "active": 1,
+    "created_at": "2026-05-12 10:00:00"
+  }
+}
+```
+
+**Erros possíveis:**
+```json
+{ "success": false, "error": "shortcode must start with # or * followed by 2-6 digits (e.g. #600, *600)" }
+{ "success": false, "error": "Shortcode #600 already exists for this company" }
+{ "success": false, "error": "Queue not found or inactive for this company" }
+```
+
+---
+
+### Atualizar Rota
+
+**Endpoint**: `PUT /queue-routes/{id}`
+
+```bash
+curl -X PUT "http://localhost/queue-routes/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "queue_id": 5,
+    "description": "Fila Suporte Técnico"
+  }'
+```
+
+---
+
+### Deletar Rota
+
+**Endpoint**: `DELETE /queue-routes/{id}`
+
+Realiza soft delete — a rota deixa de funcionar imediatamente no AGI (que filtra `active = 1 AND deleted_at IS NULL`).
+
+```bash
+curl -X DELETE "http://localhost/queue-routes/1" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+**Resposta**:
+```json
+{
+  "success": true,
+  "data": { "message": "Queue route deleted successfully" }
+}
+```
+
+---
+
+### Configuração no Asterisk
+
+O dialplan já está configurado para capturar os padrões. Após criar rotas via API, nenhuma alteração adicional é necessária:
+
+```ini
+; from-internal — padrão para # (ex: #600, #700)
+exten => _#XX.,1,AGI(get-queue-by-extension.php)
+same => n,Queue(${QUEUE_NAME},tThHc,,,300,,atendimento)
+
+; from-internal — padrão alternativo com * (ex: *600, *700)
+exten => _*XX.,1,AGI(get-queue-by-extension.php)
+same => n,Queue(${QUEUE_NAME},tThHc,,,300,,atendimento)
+```
+
+---
+
+### Exemplo: Setup Completo de Rotas
+
+```bash
+# 1. Verificar ID das filas disponíveis
+curl -X GET "http://localhost/queues" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+
+# 2. Criar rota #600 → fila suporte (id=3)
+curl -X POST "http://localhost/queue-routes" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{"shortcode": "#600", "queue_id": 3, "description": "Suporte"}'
+
+# 3. Criar rota #700 → fila vendas (id=4)
+curl -X POST "http://localhost/queue-routes" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{"shortcode": "#700", "queue_id": 4, "description": "Vendas"}'
+
+# 4. Listar rotas configuradas
+curl -X GET "http://localhost/queue-routes" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+```
+
+---
+
 ## IVRs (URAs)
 
 Gerenciamento de IVRs (Interactive Voice Response) - Unidades de Resposta Audível.
@@ -2242,6 +2455,6 @@ curl -X GET "http://localhost/dids/by-type?type=ivr" \
 ---
 
 
-**Versão**: 1.5.0
-**Última atualização**: 2026-02-05
+**Versão**: 1.6.0
+**Última atualização**: 2026-05-12
 **By: Israel Azevedo**
