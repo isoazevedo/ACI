@@ -2652,7 +2652,7 @@ API REST para gerenciamento completo de PBX Asterisk multi-tenant com suporte a:
 
 **Base URL**: `http://seu-servidor`
 
-**Versão**: 1.6.0
+**Versão**: 1.7.0
 
 ---
 
@@ -5070,6 +5070,6 @@ curl -X GET "http://localhost/dids/by-type?type=ivr" \
 ---
 
 
-**Versão**: 1.6.0
-**Última atualização**: 2026-05-12
+**Versão**: 1.7.0
+**Última atualização**: 2026-05-22
 **By: Israel Azevedo**
