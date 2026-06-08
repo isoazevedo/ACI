@@ -39,8 +39,6 @@ API REST para gerenciamento completo de PBX Asterisk multi-tenant com suporte a:
 - ✅ **IVRs (URAs)**: Menus interativos com DTMF e sub-menus
 - ✅ **AGI Integration**: Roteamento automático via AGI
 
-> **Importante (v1.8.0)**: a remoção de recursos passou a ser **definitiva** (hard delete), não mais soft delete. Toda remoção/criação/edição é registrada em `audit_log`. Rode `database/migration_audit_log.sql` antes de usar.
-
 **Base URL**: `http://seu-servidor`
 
 **Versão**: 1.8.0
@@ -1716,10 +1714,6 @@ Consulta de registros de chamadas telefônicas. A tabela é populada diretamente
 
 O módulo `res_cdr_mysql` (ou `res_cdr_odbc`) do Asterisk deve estar configurado para gravar na tabela `cdr` do banco `asterisk-api`. Execute também a migration de índices:
 
-```bash
-mysql -u aztell -p asterisk-api < database/migration_cdr_indexes.sql
-```
-
 ---
 
 ### Listar Ligações
@@ -1838,10 +1832,6 @@ Registro de auditoria de todas as ações de CRUD da API (empresa, ramal, tronco
 ### Pré-requisitos
 
 Execute a migration que cria a tabela e converte as remoções para definitivas (hard delete):
-
-```bash
-mysql -u aztell -p asterisk-api < database/migration_audit_log.sql
-```
 
 > ⚠️ **Mudança de comportamento**: a partir desta versão a remoção de recursos é **definitiva** (DELETE real), não mais soft delete. A migration apaga os registros já soft-deletados e ajusta os índices UNIQUE. Faça backup antes de rodar.
 
