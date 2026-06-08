@@ -1,0 +1,3074 @@
+{
+  "info": {
+    "_postman_id": "asterisk-api-collection-2025",
+    "name": "Asterisk API - Complete Collection",
+    "description": "Collection completa para testar a API de integração com Asterisk.\n\n## Configuração:\n1. Configure as variáveis de ambiente (Environment)\n2. Defina: api_url, api_token, company_id\n3. Execute os testes\n\n## Multi-Empresa:\n- Todas as requisições suportam X-Company-ID no header\n- Configure company_id nas variáveis de ambiente",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/health",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Verifica se a API está funcionando corretamente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints do sistema"
+    },
+    {
+      "name": "Companies (Empresas)",
+      "item": [
+        {
+          "name": "List All Companies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/companies",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies"
+              ]
+            },
+            "description": "Lista todas as empresas cadastradas"
+          },
+          "response": []
+        },
+        {
+          "name": "List Companies with Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/companies/with-stats",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies",
+                "with-stats"
+              ]
+            },
+            "description": "Lista empresas com estatísticas de recursos"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Company",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/companies/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies",
+                "1"
+              ]
+            },
+            "description": "Obtém detalhes de uma empresa específica"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Company Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/companies/1/stats",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies",
+                "1",
+                "stats"
+              ]
+            },
+            "description": "Obtém estatísticas detalhadas da empresa"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"company_id\": \"acme\",\n    \"name\": \"ACME Corporation\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/companies",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies"
+              ]
+            },
+            "description": "Cria nova empresa"
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Company ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"company_id\": \"nova_empresa\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/companies/validate",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies",
+                "validate"
+              ]
+            },
+            "description": "Valida se company_id é válido"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Company",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"ACME Corporation Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/companies/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies",
+                "1"
+              ]
+            },
+            "description": "Atualiza empresa existente"
+          },
+          "response": []
+        },
+        {
+          "name": "Activate Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/companies/1/activate",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies",
+                "1",
+                "activate"
+              ]
+            },
+            "description": "Ativa empresa"
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/companies/1/deactivate",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies",
+                "1",
+                "deactivate"
+              ]
+            },
+            "description": "Desativa empresa"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Company",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/companies/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies",
+                "1"
+              ]
+            },
+            "description": "Deleta empresa (soft delete, apenas sem recursos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Force Delete Company",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/companies/1/force-delete",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "companies",
+                "1",
+                "force-delete"
+              ]
+            },
+            "description": "Deleta empresa forçado (com todos os recursos)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento de empresas"
+    },
+    {
+      "name": "Extensions (Ramais)",
+      "item": [
+        {
+          "name": "List All Extensions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/extensions",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "extensions"
+              ]
+            },
+            "description": "Lista todos os ramais configurados"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Extension",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/extension/1000",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "extension",
+                "1000"
+              ]
+            },
+            "description": "Obtém detalhes de um ramal específico"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Extension WebRTC",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"extension\": \"1000\",\n    \"password\": \"senha123\",\n    \"caller_id_name\": \"João Silva\",\n    \"caller_id_num\": \"1000\",\n    \"context\": \"default\",\n    \"max_contacts\": 2\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/extension",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "extension"
+              ]
+            },
+            "description": "Cria um novo ramal WebRTC com suporte completo (DTLS, ICE, SRTP)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Extension",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"password\": \"nova_senha456\",\n    \"caller_id_name\": \"João da Silva\",\n    \"context\": \"interno\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/extension/1000",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "extension",
+                "1000"
+              ]
+            },
+            "description": "Atualiza um ramal existente"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Extension",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/extension/1000",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "extension",
+                "1000"
+              ]
+            },
+            "description": "Remove um ramal"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento de ramais WebRTC (PJSIP)"
+    },
+    {
+      "name": "Trunks (Troncos)",
+      "item": [
+        {
+          "name": "List All Trunks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/trunks",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "trunks"
+              ]
+            },
+            "description": "Lista todos os troncos configurados"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Trunk",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/trunk/trunk_operadora",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "trunk",
+                "trunk_operadora"
+              ]
+            },
+            "description": "Obtém detalhes de um tronco específico"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Trunk (Registration)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"trunk\": \"trunk_operadora\",\n    \"type\": \"registration\",\n    \"host\": \"sip.provedor.com\",\n    \"username\": \"meu_usuario\",\n    \"password\": \"minha_senha\",\n    \"context\": \"from-trunk\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/trunk",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "trunk"
+              ]
+            },
+            "description": "Cria um tronco com registro (username/password)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Trunk (Static IP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"trunk\": \"trunk_ip_fixo\",\n    \"type\": \"static\",\n    \"host\": \"200.150.100.50\",\n    \"context\": \"from-trunk\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/trunk",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "trunk"
+              ]
+            },
+            "description": "Cria um tronco estático (IP fixo, sem registro)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Trunk",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"context\": \"novo_contexto\",\n    \"password\": \"nova_senha\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/trunk/trunk_operadora",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "trunk",
+                "trunk_operadora"
+              ]
+            },
+            "description": "Atualiza um tronco existente"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Trunk",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/trunk/trunk_operadora",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "trunk",
+                "trunk_operadora"
+              ]
+            },
+            "description": "Remove um tronco"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento de troncos PJSIP"
+    },
+    {
+      "name": "Queues (Filas)",
+      "item": [
+        {
+          "name": "List All Queues",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/queues",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queues"
+              ]
+            },
+            "description": "Lista todas as filas configuradas"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Queue",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/queue/suporte",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queue",
+                "suporte"
+              ]
+            },
+            "description": "Obtém detalhes de uma fila específica (inclui membros ativos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Queue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"queue\": \"suporte\",\n    \"strategy\": \"rrmemory\",\n    \"timeout\": 30,\n    \"retry\": 5,\n    \"wrapuptime\": 15,\n    \"maxlen\": 0,\n    \"musicclass\": \"default\",\n    \"members\": [\"1000\", \"1001\", \"1002\"]\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queue"
+              ]
+            },
+            "description": "Cria uma nova fila de atendimento.\n\nEstratégias disponíveis:\n- ringall: Toca em todos simultaneamente\n- rrmemory: Round Robin com memória\n- leastrecent: Menos recente\n- fewestcalls: Menos chamadas\n- random: Aleatório\n- linear: Sequencial"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Queue",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"strategy\": \"fewestcalls\",\n    \"timeout\": 45,\n    \"maxlen\": 20\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue/suporte",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queue",
+                "suporte"
+              ]
+            },
+            "description": "Atualiza uma fila existente"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Queue",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/queue/suporte",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queue",
+                "suporte"
+              ]
+            },
+            "description": "Remove uma fila"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento de filas de atendimento"
+    },
+    {
+      "name": "Queue Members (Membros)",
+      "item": [
+        {
+          "name": "Add Member to Queue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"extension\": \"1003\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue/suporte/add-member",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queue",
+                "suporte",
+                "add-member"
+              ]
+            },
+            "description": "Adiciona um ramal à fila em tempo real (via AMI)"
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Member from Queue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"extension\": \"1003\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue/suporte/remove-member",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queue",
+                "suporte",
+                "remove-member"
+              ]
+            },
+            "description": "Remove um ramal da fila em tempo real (via AMI)"
+          },
+          "response": []
+        },
+        {
+          "name": "Pause Member in Queue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"extension\": \"1003\",\n    \"reason\": \"Pausa para almoço\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue/suporte/pause-member",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queue",
+                "suporte",
+                "pause-member"
+              ]
+            },
+            "description": "Pausa um ramal na fila em tempo real (via AMI)"
+          },
+          "response": []
+        },
+        {
+          "name": "Unpause Member in Queue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"extension\": \"1003\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue/suporte/unpause-member",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queue",
+                "suporte",
+                "unpause-member"
+              ]
+            },
+            "description": "Remove a pausa de um ramal na fila em tempo real (via AMI)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento de membros da fila (operações em tempo real via AMI)"
+    },
+    {
+      "name": "IVRs (URAs)",
+      "item": [
+        {
+          "name": "List All IVRs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/ivrs",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs"
+              ]
+            },
+            "description": "Lista todas as IVRs (URAs) configuradas para a empresa"
+          },
+          "response": []
+        },
+        {
+          "name": "Get IVR",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/ivrs/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs",
+                "1"
+              ]
+            },
+            "description": "Obtém detalhes de uma IVR específica (inclui opções configuradas)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create IVR",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"ivr_name\": \"menu_principal\",\n    \"description\": \"Menu principal de atendimento\",\n    \"welcome_audio_url\": \"http://example.com/audios/bemvindo.wav\",\n    \"timeout\": 5,\n    \"max_retries\": 3,\n    \"timeout_destination_type\": \"queue\",\n    \"timeout_destination\": \"suporte\",\n    \"invalid_destination_type\": \"repeat\",\n    \"options\": [\n        {\n            \"digit\": \"1\",\n            \"action_type\": \"queue\",\n            \"destination\": \"comercial\",\n            \"description\": \"Setor Comercial\"\n        },\n        {\n            \"digit\": \"2\",\n            \"action_type\": \"queue\",\n            \"destination\": \"suporte\",\n            \"description\": \"Suporte Técnico\"\n        },\n        {\n            \"digit\": \"3\",\n            \"action_type\": \"extension\",\n            \"destination\": \"1000\",\n            \"description\": \"Falar com atendente\"\n        },\n        {\n            \"digit\": \"0\",\n            \"action_type\": \"ivr\",\n            \"destination\": \"menu_secundario\",\n            \"description\": \"Voltar ao menu anterior\"\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/ivrs",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs"
+              ]
+            },
+            "description": "Cria uma nova IVR (URA) com opções de menu.\n\n**Tipos de ação (action_type):**\n- queue: Direciona para fila\n- extension: Direciona para ramal\n- ivr: Direciona para outra IVR (sub-menu)\n- hangup: Desliga a chamada\n\n**Destinos para timeout/invalid:**\n- hangup: Desliga\n- repeat: Repete o menu (apenas invalid)\n- queue: Direciona para fila\n- extension: Direciona para ramal\n- ivr: Direciona para outra IVR"
+          },
+          "response": []
+        },
+        {
+          "name": "Create IVR Simple",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"ivr_name\": \"menu_simples\",\n    \"welcome_audio_url\": \"http://example.com/audios/menu.wav\",\n    \"options\": [\n        {\"digit\": \"1\", \"action_type\": \"queue\", \"destination\": \"vendas\"},\n        {\"digit\": \"2\", \"action_type\": \"queue\", \"destination\": \"suporte\"},\n        {\"digit\": \"9\", \"action_type\": \"hangup\"}\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/ivrs",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs"
+              ]
+            },
+            "description": "Cria IVR simples com configurações padrão"
+          },
+          "response": []
+        },
+        {
+          "name": "Update IVR",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"description\": \"Menu principal atualizado\",\n    \"timeout\": 10,\n    \"max_retries\": 5,\n    \"welcome_audio_url\": \"http://example.com/audios/novo_bemvindo.wav\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/ivrs/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs",
+                "1"
+              ]
+            },
+            "description": "Atualiza configurações da IVR (sem alterar opções)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update IVR with Options",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"description\": \"Menu atualizado com novas opções\",\n    \"options\": [\n        {\"digit\": \"1\", \"action_type\": \"queue\", \"destination\": \"vendas\"},\n        {\"digit\": \"2\", \"action_type\": \"queue\", \"destination\": \"financeiro\"},\n        {\"digit\": \"3\", \"action_type\": \"queue\", \"destination\": \"suporte\"},\n        {\"digit\": \"0\", \"action_type\": \"extension\", \"destination\": \"1000\"}\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/ivrs/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs",
+                "1"
+              ]
+            },
+            "description": "Atualiza IVR substituindo todas as opções existentes"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete IVR",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/ivrs/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs",
+                "1"
+              ]
+            },
+            "description": "Remove uma IVR (soft delete)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento de IVRs (URAs - Unidades de Resposta Audível)\n\nUma IVR é um menu interativo que permite aos chamadores navegar por opções usando o teclado do telefone (DTMF).\n\n## Fluxo:\n1. Chamada entra no DID mapeado para IVR\n2. Áudio de boas-vindas é reproduzido\n3. Sistema aguarda dígito DTMF\n4. Dígito é processado e chamada roteada para destino\n\n## Tipos de destino:\n- **queue**: Fila de atendimento\n- **extension**: Ramal direto\n- **ivr**: Outro menu (sub-IVR)\n- **hangup**: Desliga a chamada"
+    },
+    {
+      "name": "IVR Options (Opções)",
+      "item": [
+        {
+          "name": "List IVR Options",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/ivrs/1/options",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs",
+                "1",
+                "options"
+              ]
+            },
+            "description": "Lista todas as opções (dígitos) configuradas para a IVR"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Option to IVR",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"digit\": \"5\",\n    \"action_type\": \"queue\",\n    \"destination\": \"financeiro\",\n    \"description\": \"Setor Financeiro\",\n    \"audio_url\": \"http://example.com/audios/financeiro.wav\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/ivrs/1/options",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs",
+                "1",
+                "options"
+              ]
+            },
+            "description": "Adiciona uma nova opção (dígito) à IVR.\n\n**Dígitos válidos:** 0-9, *, #\n\n**Campos:**\n- digit: Dígito DTMF (obrigatório)\n- action_type: queue, extension, ivr, hangup (obrigatório)\n- destination: Destino da ação (obrigatório exceto para hangup)\n- description: Descrição da opção\n- audio_url: Áudio a reproduzir antes de rotear"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Option by Digit",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/ivrs/1/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs",
+                "1",
+                "1"
+              ]
+            },
+            "description": "Obtém detalhes de uma opção específica pelo dígito\n\nFormato: /ivrs/{ivr_id}/{digit}"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Option",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"action_type\": \"extension\",\n    \"destination\": \"1001\",\n    \"description\": \"Atendente VIP\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/ivrs/1/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs",
+                "1",
+                "1"
+              ]
+            },
+            "description": "Atualiza uma opção existente\n\nFormato: /ivrs/{ivr_id}/{digit}"
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Option",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/ivrs/1/5",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs",
+                "1",
+                "5"
+              ]
+            },
+            "description": "Remove uma opção específica da IVR\n\nFormato: /ivrs/{ivr_id}/{digit}"
+          },
+          "response": []
+        },
+        {
+          "name": "Remove All Options",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/ivrs/1/options",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "ivrs",
+                "1",
+                "options"
+              ]
+            },
+            "description": "Remove todas as opções da IVR de uma vez"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento de opções (dígitos DTMF) de uma IVR"
+    },
+    {
+      "name": "DID Mapping to IVR",
+      "item": [
+        {
+          "name": "Map DID to IVR",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"did_number\": \"06132334455\",\n    \"destination_type\": \"ivr\",\n    \"destination\": \"menu_principal\",\n    \"description\": \"DID principal direcionado para IVR\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/dids",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "dids"
+              ]
+            },
+            "description": "Mapeia um número DID para uma IVR.\n\nQuando uma chamada chegar neste DID, será direcionada automaticamente para a IVR configurada."
+          },
+          "response": []
+        },
+        {
+          "name": "List DIDs by Type (IVR)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/dids/by-type?type=ivr",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "dids",
+                "by-type"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "ivr"
+                }
+              ]
+            },
+            "description": "Lista todos os DIDs mapeados para IVRs"
+          },
+          "response": []
+        }
+      ],
+      "description": "Exemplos de mapeamento de DIDs para IVRs"
+    },
+    {
+      "name": "DID Business Hours (Schedules)",
+      "item": [
+        {
+          "name": "List Schedules",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/dids/1/schedules",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "dids",
+                "1",
+                "schedules"
+              ]
+            },
+            "description": "Lista todos os horarios comerciais configurados para o DID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Schedule",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/dids/1/schedules/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "dids",
+                "1",
+                "schedules",
+                "1"
+              ]
+            },
+            "description": "Obtem detalhes de um horario comercial especifico"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Schedule (Weekdays)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"label\": \"Dias uteis\",\n    \"days\": \"mon,tue,wed,thu,fri\",\n    \"time_start\": \"08:00:00\",\n    \"time_end\": \"22:00:00\",\n    \"priority\": 10\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/dids/1/schedules",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "dids",
+                "1",
+                "schedules"
+              ]
+            },
+            "description": "Cria horario comercial para dias uteis (seg-sex 08:00-22:00)\n\n**Campos obrigatorios:**\n- days: Dias separados por virgula (mon,tue,wed,thu,fri,sat,sun)\n\n**Campos opcionais:**\n- label: Nome do horario\n- time_start: Hora inicio (padrao: 08:00:00)\n- time_end: Hora fim (padrao: 18:00:00)\n- priority: 0-100, menor = maior prioridade (padrao: 10)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Schedule (Saturday)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"label\": \"Sabado\",\n    \"days\": \"sat\",\n    \"time_start\": \"08:00:00\",\n    \"time_end\": \"18:00:00\",\n    \"priority\": 20\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/dids/1/schedules",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "dids",
+                "1",
+                "schedules"
+              ]
+            },
+            "description": "Cria horario comercial para sabado (08:00-18:00)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Schedule (Sunday)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"label\": \"Domingo\",\n    \"days\": \"sun\",\n    \"time_start\": \"08:00:00\",\n    \"time_end\": \"12:00:00\",\n    \"priority\": 30\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/dids/1/schedules",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "dids",
+                "1",
+                "schedules"
+              ]
+            },
+            "description": "Cria horario comercial para domingo (08:00-12:00)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Schedule",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"time_end\": \"20:00:00\",\n    \"label\": \"Dias uteis - Atualizado\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/dids/1/schedules/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "dids",
+                "1",
+                "schedules",
+                "1"
+              ]
+            },
+            "description": "Atualiza um horario comercial existente"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Schedule",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/dids/1/schedules/1",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "dids",
+                "1",
+                "schedules",
+                "1"
+              ]
+            },
+            "description": "Remove um horario comercial especifico (soft delete)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete All Schedules",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/dids/1/schedules",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "dids",
+                "1",
+                "schedules"
+              ]
+            },
+            "description": "Remove todos os horarios comerciais do DID (soft delete)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento de multiplos horarios comerciais por DID.\n\nPermite configurar horarios diferentes para cada dia da semana.\nExemplo: seg-sex 08:00-22:00, sab 08:00-18:00, dom 08:00-12:00.\n\nOs horarios sao verificados em ordem de prioridade (menor = maior).\nO primeiro match determina se esta dentro do horario comercial.\n\nSe nenhum schedule existir, o sistema usa as colunas legadas (business_hours_start/end/days)."
+    },
+    {
+      "name": "Recordings (Gravações)",
+      "item": [
+        {
+          "name": "List Recordings",
+          "item": [
+            {
+              "name": "List by Date (Year)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings?year=2026",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings"
+                  ],
+                  "query": [
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    }
+                  ]
+                },
+                "description": "Lista todas as gravações de 2026"
+              },
+              "response": []
+            },
+            {
+              "name": "List by Date (Year + Month)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings?year=2026&month=01",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings"
+                  ],
+                  "query": [
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    },
+                    {
+                      "key": "month",
+                      "value": "01"
+                    }
+                  ]
+                },
+                "description": "Lista gravações de janeiro/2026"
+              },
+              "response": []
+            },
+            {
+              "name": "List by Date (Year + Month + Day)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings?year=2026&month=01&day=27",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings"
+                  ],
+                  "query": [
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    },
+                    {
+                      "key": "month",
+                      "value": "01"
+                    },
+                    {
+                      "key": "day",
+                      "value": "27"
+                    }
+                  ]
+                },
+                "description": "Lista gravações de 27/01/2026"
+              },
+              "response": []
+            },
+            {
+              "name": "List by Company",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Company-ID",
+                    "value": "{{company_id}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings?year=2026&month=01&company_id={{company_id}}",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings"
+                  ],
+                  "query": [
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    },
+                    {
+                      "key": "month",
+                      "value": "01"
+                    },
+                    {
+                      "key": "company_id",
+                      "value": "{{company_id}}"
+                    }
+                  ]
+                },
+                "description": "Lista gravações filtradas por empresa"
+              },
+              "response": []
+            }
+          ],
+          "description": "Listagem de gravações por data e empresa"
+        },
+        {
+          "name": "Search Recordings",
+          "item": [
+            {
+              "name": "Search by Extension",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings/search?extension=1003&year=2026&month=01",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "extension",
+                      "value": "1003",
+                      "description": "Ramal a buscar"
+                    },
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    },
+                    {
+                      "key": "month",
+                      "value": "01"
+                    }
+                  ]
+                },
+                "description": "Busca gravações do ramal 1003"
+              },
+              "response": []
+            },
+            {
+              "name": "Search by Number",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings/search?number=61998003028&year=2026",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "number",
+                      "value": "61998003028",
+                      "description": "Número de telefone"
+                    },
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    }
+                  ]
+                },
+                "description": "Busca gravações com número específico"
+              },
+              "response": []
+            },
+            {
+              "name": "Search by Filename",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings/search?filename=FukG6MjHeDsO&year=2026",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "filename",
+                      "value": "FukG6MjHeDsO",
+                      "description": "Parte do nome do arquivo (Unique ID, data, etc)"
+                    },
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    }
+                  ]
+                },
+                "description": "Busca por qualquer parte do nome do arquivo (case-insensitive)"
+              },
+              "response": []
+            },
+            {
+              "name": "Advanced Search",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings/search?extension=1003&number=6199&date_from=2026-01-27&date_to=2026-01-27&year=2026",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "extension",
+                      "value": "1003"
+                    },
+                    {
+                      "key": "number",
+                      "value": "6199"
+                    },
+                    {
+                      "key": "date_from",
+                      "value": "2026-01-27"
+                    },
+                    {
+                      "key": "date_to",
+                      "value": "2026-01-27"
+                    },
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    }
+                  ]
+                },
+                "description": "Busca com múltiplos critérios combinados"
+              },
+              "response": []
+            }
+          ],
+          "description": "Busca de gravações por diferentes critérios"
+        },
+        {
+          "name": "Recording Info",
+          "item": [
+            {
+              "name": "Get Recording Info",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings/202601271947-1003-61998003028-FukG6MjHeDsO.mp3",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "202601271947-1003-61998003028-FukG6MjHeDsO.mp3"
+                  ]
+                },
+                "description": "Obtém informações completas de uma gravação (incluindo parse do nome)"
+              },
+              "response": []
+            },
+            {
+              "name": "Parse Filename",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings/parse?filename=202601271947-1003-61998003028-FukG6MjHeDsO.mp3",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "parse"
+                  ],
+                  "query": [
+                    {
+                      "key": "filename",
+                      "value": "202601271947-1003-61998003028-FukG6MjHeDsO.mp3"
+                    }
+                  ]
+                },
+                "description": "Extrai informações estruturadas do nome do arquivo (datetime, ramal, número, unique_id)"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Statistics",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings/stats?year=2026&month=01",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "stats"
+                  ],
+                  "query": [
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    },
+                    {
+                      "key": "month",
+                      "value": "01"
+                    }
+                  ]
+                },
+                "description": "Estatísticas: total de gravações, tamanho total, etc"
+              },
+              "response": []
+            }
+          ],
+          "description": "Informações e estatísticas de gravações"
+        },
+        {
+          "name": "Download Links",
+          "item": [
+            {
+              "name": "Generate Token Link",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"expires_in_hours\": 24\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/recordings/202601271947-1003-61998003028-FukG6MjHeDsO.mp3/generate-link",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "202601271947-1003-61998003028-FukG6MjHeDsO.mp3",
+                    "generate-link"
+                  ]
+                },
+                "description": "Gera link temporário com token (válido por 24h padrão)\n\nRetorna: token, download_url\nLink NÃO requer autenticação para download!"
+              },
+              "response": []
+            },
+            {
+              "name": "Generate Public Link",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"expires_in_days\": 7\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/recordings/202601271947-1003-61998003028-FukG6MjHeDsO.mp3/public-link",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "202601271947-1003-61998003028-FukG6MjHeDsO.mp3",
+                    "public-link"
+                  ]
+                },
+                "description": "Gera link público (válido por 7 dias padrão)\n\nRetorna: hash, public_url, full_url\nPerfeito para compartilhar via WhatsApp/E-mail!"
+              },
+              "response": []
+            },
+            {
+              "name": "Generate All Links",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token_expires_hours\": 48,\n  \"public_expires_days\": 30\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/recordings/202601271947-1003-61998003028-FukG6MjHeDsO.mp3/all-links",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "202601271947-1003-61998003028-FukG6MjHeDsO.mp3",
+                    "all-links"
+                  ]
+                },
+                "description": "Gera ambos os tipos de link de uma vez\n\nRetorna: token_link + public_link + filesize"
+              },
+              "response": []
+            },
+            {
+              "name": "Test Link Generation",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings/test-link?filename=202601271947-1003-61998003028-FukG6MjHeDsO.mp3",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "test-link"
+                  ],
+                  "query": [
+                    {
+                      "key": "filename",
+                      "value": "202601271947-1003-61998003028-FukG6MjHeDsO.mp3"
+                    }
+                  ]
+                },
+                "description": "Endpoint de teste: gera ambos os links automaticamente com instruções de uso"
+              },
+              "response": []
+            }
+          ],
+          "description": "Geração de links de download compartilháveis"
+        },
+        {
+          "name": "Download",
+          "item": [
+            {
+              "name": "Download with Authentication",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{api_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_url}}/recordings/download?file=202601271947-1003-61998003028-FukG6MjHeDsO.mp3",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "download"
+                  ],
+                  "query": [
+                    {
+                      "key": "file",
+                      "value": "202601271947-1003-61998003028-FukG6MjHeDsO.mp3"
+                    }
+                  ]
+                },
+                "description": "Download direto com autenticação Bearer"
+              },
+              "response": []
+            },
+            {
+              "name": "Download with Token (NO AUTH)",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{api_url}}/recordings/download?token=COLE_O_TOKEN_AQUI",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "download"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "COLE_O_TOKEN_AQUI",
+                      "description": "Token gerado pelo endpoint /generate-link"
+                    }
+                  ]
+                },
+                "description": "Download via token temporário\n\n⚠️ NÃO requer Bearer token!\nUse o token gerado em 'Generate Token Link'"
+              },
+              "response": []
+            },
+            {
+              "name": "Download Public Link (NO AUTH)",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{api_url}}/recordings/public/HASH_AQUI/202601271947-1003-61998003028-FukG6MjHeDsO.mp3?expires=TIMESTAMP_AQUI",
+                  "host": [
+                    "{{api_url}}"
+                  ],
+                  "path": [
+                    "recordings",
+                    "public",
+                    "HASH_AQUI",
+                    "202601271947-1003-61998003028-FukG6MjHeDsO.mp3"
+                  ],
+                  "query": [
+                    {
+                      "key": "expires",
+                      "value": "TIMESTAMP_AQUI",
+                      "description": "Timestamp de expiração"
+                    }
+                  ]
+                },
+                "description": "Download via link público\n\n⚠️ NÃO requer Bearer token!\nCopie a URL completa de 'Generate Public Link'"
+              },
+              "response": []
+            }
+          ],
+          "description": "Download de arquivos de gravação"
+        },
+        {
+          "name": "Delete Recording",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/recordings/202601271947-1003-61998003028-FukG6MjHeDsO.mp3",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "recordings",
+                "202601271947-1003-61998003028-FukG6MjHeDsO.mp3"
+              ]
+            },
+            "description": "Deleta uma gravação do servidor\n\n⚠️ ATENÇÃO: Ação irreversível!"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento completo de gravações de chamadas\n\n## Recursos:\n- ✅ Listar por data/empresa\n- ✅ Buscar por ramal/número/nome\n- ✅ Gerar links compartilháveis\n- ✅ Download com/sem autenticação\n- ✅ Parse de nome de arquivo\n- ✅ Estatísticas\n\n## Links de Download:\n- **Token Link**: Temporário (24h), token criptografado\n- **Public Link**: Compartilhável (7 dias), hash MD5\n- Ambos NÃO requerem autenticação no download!"
+    },
+    {
+      "name": "Multi-Company Examples",
+      "item": [
+        {
+          "name": "Create Extension - Company 1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "empresa1",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"extension\": \"2000\",\n    \"password\": \"senha123\",\n    \"caller_id_name\": \"João Silva - Empresa1\",\n    \"caller_id_num\": \"2000\",\n    \"context\": \"empresa1-interno\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/extension",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "extension"
+              ]
+            },
+            "description": "Cria ramal para empresa1\nArquivo: /etc/asterisk/pjsip.d/empresa1.conf"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Extension - Company 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "empresa2",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"extension\": \"3000\",\n    \"password\": \"senha456\",\n    \"caller_id_name\": \"Maria Santos - Empresa2\",\n    \"caller_id_num\": \"3000\",\n    \"context\": \"empresa2-interno\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/extension",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "extension"
+              ]
+            },
+            "description": "Cria ramal para empresa2\nArquivo: /etc/asterisk/pjsip.d/empresa2.conf"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Queue - Company 1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "empresa1",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"queue\": \"empresa1-suporte\",\n    \"strategy\": \"rrmemory\",\n    \"timeout\": 30,\n    \"retry\": 5\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queue"
+              ]
+            },
+            "description": "Cria fila para empresa1\nArquivo: /etc/asterisk/queues.d/empresa1.conf"
+          },
+          "response": []
+        },
+        {
+          "name": "List Extensions - Company 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "empresa1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/extensions",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "extensions"
+              ]
+            },
+            "description": "Lista apenas ramais da empresa1"
+          },
+          "response": []
+        }
+      ],
+      "description": "Exemplos de uso com múltiplas empresas"
+    },
+    {
+      "name": "CDR (Registro de Ligações)",
+      "description": "Consulta de registros de chamadas telefônicas.\nSomente leitura — a tabela é populada diretamente pelo Asterisk (res_cdr_mysql).\nO company_id é gravado pelos AGIs via Set(CDR(company_id)=...).\n\nFiltros disponíveis: date_from, date_to, direction (inbound/outbound), disposition (ANSWERED/NO ANSWER/BUSY/FAILED), src, dst, page, limit.",
+      "item": [
+        {
+          "name": "List CDR",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{api_token}}", "type": "text" },
+              { "key": "X-Company-ID",  "value": "{{company_id}}",      "type": "text" }
+            ],
+            "url": {
+              "raw": "{{api_url}}/cdr?date_from=2026-05-01&date_to=2026-05-31&direction=inbound&disposition=ANSWERED&page=1&limit=50",
+              "host": ["{{api_url}}"],
+              "path": ["cdr"],
+              "query": [
+                { "key": "date_from",   "value": "2026-05-01" },
+                { "key": "date_to",     "value": "2026-05-31" },
+                { "key": "direction",   "value": "inbound",   "description": "inbound ou outbound" },
+                { "key": "disposition", "value": "ANSWERED",  "description": "ANSWERED, NO ANSWER, BUSY, FAILED" },
+                { "key": "src",         "value": "",          "disabled": true, "description": "Número de origem (parcial)" },
+                { "key": "dst",         "value": "",          "disabled": true, "description": "Número de destino (parcial)" },
+                { "key": "page",        "value": "1" },
+                { "key": "limit",       "value": "50",        "description": "Máximo 200" }
+              ]
+            },
+            "description": "Lista registros de ligações com filtros e paginação.\n\nRetorna: records[] com campo direction calculado (inbound/outbound) e contact_id/conversation_id/inbox_id extraídos do userfield JSON.\n\nPaginação: pagination.total, pagination.pages, pagination.page, pagination.limit."
+          },
+          "response": []
+        },
+        {
+          "name": "Get CDR by UniqueID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{api_token}}", "type": "text" },
+              { "key": "X-Company-ID",  "value": "{{company_id}}",      "type": "text" }
+            ],
+            "url": {
+              "raw": "{{api_url}}/cdr/1769199381.41",
+              "host": ["{{api_url}}"],
+              "path": ["cdr", "1769199381.41"]
+            },
+            "description": "Busca o detalhe de uma ligação específica pelo uniqueid do Asterisk."
+          },
+          "response": []
+        },
+        {
+          "name": "CDR Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{api_token}}", "type": "text" },
+              { "key": "X-Company-ID",  "value": "{{company_id}}",      "type": "text" }
+            ],
+            "url": {
+              "raw": "{{api_url}}/cdr/stats?date_from=2026-05-01&date_to=2026-05-31",
+              "host": ["{{api_url}}"],
+              "path": ["cdr", "stats"],
+              "query": [
+                { "key": "date_from", "value": "2026-05-01" },
+                { "key": "date_to",   "value": "2026-05-31" }
+              ]
+            },
+            "description": "Retorna estatísticas agregadas do período:\n- total, answered, no_answer, busy, failed\n- answer_rate (%)\n- avg_duration, avg_billsec (segundos, apenas chamadas atendidas)\n- total_duration (segundos totais)\n- by_direction: { inbound, outbound }"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Audit Log (Registro de Ações)",
+      "description": "Registro de auditoria de todas as ações de CRUD da API (empresa, ramal, tronco, fila, membro, IVR, DID, rota).\nSomente leitura — alimentado automaticamente a cada operação.\n\nA partir desta versão a remoção de recursos é DEFINITIVA (hard delete). Rode database/migration_audit_log.sql.\n\nFiltros: entity_type, action (create/update/delete/force-delete), entity_ref, date_from, date_to, page, limit.",
+      "item": [
+        {
+          "name": "List Audit Log",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{api_token}}", "type": "text" },
+              { "key": "X-Company-ID",  "value": "{{company_id}}",      "type": "text" }
+            ],
+            "url": {
+              "raw": "{{api_url}}/audit-log?entity_type=extension&action=delete&date_from=2026-06-01&page=1&limit=50",
+              "host": ["{{api_url}}"],
+              "path": ["audit-log"],
+              "query": [
+                { "key": "entity_type", "value": "extension", "description": "company, extension, trunk, queue, queue_member, ivr, did, queue_route" },
+                { "key": "action",      "value": "delete",    "description": "create, update, delete, force-delete" },
+                { "key": "entity_ref",  "value": "",           "disabled": true, "description": "Identificador do recurso (parcial, ex: 110)" },
+                { "key": "date_from",   "value": "2026-06-01" },
+                { "key": "date_to",     "value": "",           "disabled": true },
+                { "key": "page",        "value": "1" },
+                { "key": "limit",       "value": "50",         "description": "Máximo 200" }
+              ]
+            },
+            "description": "Lista as ações registradas com filtros e paginação.\n\nCada registro traz: entity_type, entity_ref, action, description (legível), old_data, new_data, ip_address, created_at."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Queue Routes (Rotas de Discagem)",
+      "description": "Gerenciamento de rotas de discagem interna para filas.\nPermite que ramais internos disquem um shortcode e sejam roteados para a fila correta da empresa.\nO AGI identifica a empresa pelo ramal chamador — isolamento multi-tenant automático.\n\nA cada criação/atualização/exclusão o dialplan é regenerado automaticamente e o Asterisk recebe dialplan reload.\n\nFormato do shortcode: 2-6 dígitos, prefixo # ou * é opcional (ex: 600, #600, *700)",
+      "item": [
+        {
+          "name": "List Queue Routes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/queue-routes",
+              "host": ["{{api_url}}"],
+              "path": ["queue-routes"]
+            },
+            "description": "Lista todas as rotas de discagem da empresa com detalhes da fila vinculada (queue_name, strategy, queue_timeout)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Queue Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/queue-routes/1",
+              "host": ["{{api_url}}"],
+              "path": ["queue-routes", "1"]
+            },
+            "description": "Obtém detalhes de uma rota de discagem específica pelo ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Queue Route (sem prefixo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"shortcode\": \"600\",\n    \"queue_id\": 1,\n    \"description\": \"Fila Suporte\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue-routes",
+              "host": ["{{api_url}}"],
+              "path": ["queue-routes"]
+            },
+            "description": "Cria uma nova rota de discagem sem prefixo — o ramal disca apenas os dígitos (ex: 600).\n\nCampos obrigatórios:\n- shortcode: 2-6 dígitos, prefixo # ou * opcional (ex: 600, #600, *600)\n- queue_id: ID da fila de destino (deve pertencer à empresa)\n\nCampos opcionais:\n- description: descrição da rota\n\nApós a criação, o dialplan é regenerado e o Asterisk recarregado automaticamente.\n\nErros possíveis:\n- shortcode inválido (formato incorreto)\n- shortcode duplicado para a empresa\n- queue_id não encontrado ou inativo para a empresa"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Queue Route (#prefix)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"shortcode\": \"#600\",\n    \"queue_id\": 1,\n    \"description\": \"Fila Suporte (prefixo #)\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue-routes",
+              "host": ["{{api_url}}"],
+              "path": ["queue-routes"]
+            },
+            "description": "Cria rota com prefixo # — padrão para a maioria dos telefones IP.\nO ramal disca #600 para cair na fila configurada."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Queue Route (*prefix)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"shortcode\": \"*600\",\n    \"queue_id\": 1,\n    \"description\": \"Fila Suporte (prefixo *)\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue-routes",
+              "host": ["{{api_url}}"],
+              "path": ["queue-routes"]
+            },
+            "description": "Cria rota com prefixo * — alternativa para telefones que usam # como fim de discagem.\nUsar *600 em vez de #600 quando o aparelho não transmite o # como parte do número."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Queue Route",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"queue_id\": 2,\n    \"description\": \"Fila Suporte Técnico\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/queue-routes/1",
+              "host": ["{{api_url}}"],
+              "path": ["queue-routes", "1"]
+            },
+            "description": "Atualiza uma rota de discagem. Todos os campos são opcionais.\nPode alterar shortcode, queue_id ou description.\nSe queue_id for alterado, valida que a nova fila pertence à empresa.\nO dialplan é regenerado e recarregado automaticamente após a atualização."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Queue Route",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/queue-routes/1",
+              "host": ["{{api_url}}"],
+              "path": ["queue-routes", "1"]
+            },
+            "description": "Deleta uma rota de discagem (soft delete).\nA extensão é removida do dialplan imediatamente — o Asterisk recebe dialplan reload automático.\nO AGI também filtra active=1 AND deleted_at IS NULL como segunda barreira."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
