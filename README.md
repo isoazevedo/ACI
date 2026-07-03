@@ -38,10 +38,13 @@ API REST para gerenciamento completo de PBX Asterisk multi-tenant com suporte a:
 - ✅ **Audit Log**: Registro de todas as ações de CRUD (criação, edição, remoção)
 - ✅ **IVRs (URAs)**: Menus interativos com DTMF e sub-menus
 - ✅ **AGI Integration**: Roteamento automático via AGI
+- ✅ **WebSocket**: Monitoramento em tempo real de ramais, filas e chamadas (ver [`docs/API-WEBSOCKET.md`](API-WEBSOCKET.md))
+
+> **Importante (v1.8.0)**: a remoção de recursos passou a ser **definitiva** (hard delete), não mais soft delete. Toda remoção/criação/edição é registrada em `audit_log`. Rode `database/migration_audit_log.sql` antes de usar.
 
 **Base URL**: `http://seu-servidor`
 
-**Versão**: 1.8.0
+**Versão**: 1.8.1
 
 ---
 
@@ -1714,6 +1717,10 @@ Consulta de registros de chamadas telefônicas. A tabela é populada diretamente
 
 O módulo `res_cdr_mysql` (ou `res_cdr_odbc`) do Asterisk deve estar configurado para gravar na tabela `cdr` do banco `asterisk-api`. Execute também a migration de índices:
 
+```bash
+mysql -u aztell -p asterisk-api < database/migration_cdr_indexes.sql
+```
+
 ---
 
 ### Listar Ligações
@@ -1732,9 +1739,22 @@ O módulo `res_cdr_mysql` (ou `res_cdr_odbc`) do Asterisk deve estar configurado
 | `dst` | string | `61999` | Número de destino (parcial) |
 | `page` | int | `1` | Página (padrão: 1) |
 | `limit` | int | `50` | Registros por página (máx: 200, padrão: 50) |
+| `order_by` | string | `calldate` | Coluna de ordenação: `calldate`, `src`, `dst`, `duration`, `billsec`, `disposition` (padrão: `calldate`) |
+| `order` | string | `desc` | Direção: `asc` ou `desc` (padrão: `desc`) |
 
 ```bash
-curl -X GET "http://localhost/api/cdr?date_from=2026-05-01&date_to=2026-05-31&direction=inbound&disposition=ANSWERED&page=1&limit=20" \
+# Mais recentes primeiro (padrão)
+curl -X GET "http://localhost/api/cdr?date_from=2026-05-01&date_to=2026-05-31&order_by=calldate&order=desc" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+
+# Mais antigas primeiro
+curl -X GET "http://localhost/api/cdr?date_from=2026-05-01&date_to=2026-05-31&order_by=calldate&order=asc" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1"
+
+# Por duração, mais longas primeiro
+curl -X GET "http://localhost/api/cdr?order_by=duration&order=desc" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1"
 ```
@@ -1832,6 +1852,10 @@ Registro de auditoria de todas as ações de CRUD da API (empresa, ramal, tronco
 ### Pré-requisitos
 
 Execute a migration que cria a tabela e converte as remoções para definitivas (hard delete):
+
+```bash
+mysql -u aztell -p asterisk-api < database/migration_audit_log.sql
+```
 
 > ⚠️ **Mudança de comportamento**: a partir desta versão a remoção de recursos é **definitiva** (DELETE real), não mais soft delete. A migration apaga os registros já soft-deletados e ajusta os índices UNIQUE. Faça backup antes de rodar.
 
@@ -2679,6 +2703,6 @@ curl -X GET "http://localhost/dids/by-type?type=ivr" \
 ---
 
 
-**Versão**: 1.8.0
-**Última atualização**: 2026-06-08
+**Versão**: 1.8.1
+**Última atualização**: 2026-07-03
 **By: Israel Azevedo**
