@@ -2752,7 +2752,7 @@
     },
     {
       "name": "CDR (Registro de Ligações)",
-      "description": "Consulta de registros de chamadas telefônicas.\nSomente leitura — a tabela é populada diretamente pelo Asterisk (res_cdr_mysql).\nO company_id é gravado pelos AGIs via Set(CDR(company_id)=...).\n\nFiltros disponíveis: date_from, date_to, direction (inbound/outbound), disposition (ANSWERED/NO ANSWER/BUSY/FAILED), src, dst, page, limit.",
+      "description": "Consulta de registros de chamadas telefônicas.\nSomente leitura — a tabela é populada diretamente pelo Asterisk (res_cdr_mysql).\nO company_id é gravado pelos AGIs via Set(CDR(company_id)=...).\n\nFiltros disponíveis: date_from, date_to, direction (inbound/outbound), disposition (ANSWERED/NO ANSWER/BUSY/FAILED), src, dst, page, limit.\n\nOrdenação: order_by (calldate/src/dst/duration/billsec/disposition, padrão: calldate) e order (asc/desc, padrão: desc).",
       "item": [
         {
           "name": "List CDR",
@@ -2763,21 +2763,23 @@
               { "key": "X-Company-ID",  "value": "{{company_id}}",      "type": "text" }
             ],
             "url": {
-              "raw": "{{api_url}}/cdr?date_from=2026-05-01&date_to=2026-05-31&direction=inbound&disposition=ANSWERED&page=1&limit=50",
+              "raw": "{{api_url}}/cdr?date_from=2026-05-01&date_to=2026-05-31&direction=inbound&disposition=ANSWERED&page=1&limit=50&order_by=calldate&order=desc",
               "host": ["{{api_url}}"],
               "path": ["cdr"],
               "query": [
                 { "key": "date_from",   "value": "2026-05-01" },
                 { "key": "date_to",     "value": "2026-05-31" },
-                { "key": "direction",   "value": "inbound",   "description": "inbound ou outbound" },
-                { "key": "disposition", "value": "ANSWERED",  "description": "ANSWERED, NO ANSWER, BUSY, FAILED" },
-                { "key": "src",         "value": "",          "disabled": true, "description": "Número de origem (parcial)" },
-                { "key": "dst",         "value": "",          "disabled": true, "description": "Número de destino (parcial)" },
+                { "key": "direction",   "value": "inbound",    "description": "inbound ou outbound" },
+                { "key": "disposition", "value": "ANSWERED",   "description": "ANSWERED, NO ANSWER, BUSY, FAILED" },
+                { "key": "src",         "value": "",           "disabled": true, "description": "Número de origem (parcial)" },
+                { "key": "dst",         "value": "",           "disabled": true, "description": "Número de destino (parcial)" },
                 { "key": "page",        "value": "1" },
-                { "key": "limit",       "value": "50",        "description": "Máximo 200" }
+                { "key": "limit",       "value": "50",         "description": "Máximo 200" },
+                { "key": "order_by",    "value": "calldate",   "description": "Coluna de ordenação: calldate, src, dst, duration, billsec, disposition (padrão: calldate)" },
+                { "key": "order",       "value": "desc",       "description": "Direção: asc ou desc (padrão: desc)" }
               ]
             },
-            "description": "Lista registros de ligações com filtros e paginação.\n\nRetorna: records[] com campo direction calculado (inbound/outbound) e contact_id/conversation_id/inbox_id extraídos do userfield JSON.\n\nPaginação: pagination.total, pagination.pages, pagination.page, pagination.limit."
+            "description": "Lista registros de ligações com filtros, paginação e ordenação configurável.\n\nOrdenação:\n- order_by: calldate (padrão), src, dst, duration, billsec, disposition\n- order: desc (padrão) ou asc\n\nRetorna: records[] com campo direction calculado (inbound/outbound) e contact_id/conversation_id/inbox_id extraídos do userfield JSON.\n\nPaginação: pagination.total, pagination.pages, pagination.page, pagination.limit."
           },
           "response": []
         },
