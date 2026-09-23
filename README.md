@@ -28,15 +28,15 @@
 
 API REST para gerenciamento completo de PBX Asterisk multi-tenant com suporte a:
 
-- ✅ **Multi-empresa**: Isolamento completo por company_id
-- ✅ **Ramais PJSIP**: Gerenciamento completo de extensões
+- ✅ **Multi-empresa**: Isolamento completo por company_id, incluindo captura de chamadas (`named_call_group` / `named_pickup_group`)
+- ✅ **Ramais PJSIP**: Gerenciamento completo de extensões com CID de saída configurável por ramal (`outbound_cid`)
 - ✅ **Troncos**: SIP registration e static
 - ✅ **Filas**: Criação e gerenciamento de queues
 - ✅ **DIDs**: Roteamento de chamadas de entrada
 - ✅ **Queue Routes**: Discagem interna para filas via shortcode (600, #600, *600)
 - ✅ **CDR**: Consulta de registros de ligações com filtros e estatísticas
 - ✅ **Audit Log**: Registro de todas as ações de CRUD (criação, edição, remoção)
-- ✅ **IVRs (URAs)**: Menus interativos com DTMF e sub-menus
+- ✅ **IVRs (URAs)**: Menus interativos com DTMF, sub-menus e discagem direta para ramal/fila
 - ✅ **AGI Integration**: Roteamento automático via AGI
 - ✅ **WebSocket**: Monitoramento em tempo real de ramais, filas e chamadas (ver [`docs/API-WEBSOCKET.md`](API-WEBSOCKET.md))
 
@@ -44,7 +44,7 @@ API REST para gerenciamento completo de PBX Asterisk multi-tenant com suporte a:
 
 **Base URL**: `http://seu-servidor`
 
-**Versão**: 1.8.1
+**Versão**: 1.8.0
 
 ---
 
@@ -886,6 +886,9 @@ Perfil para **telefones IP tradicionais** (Grandstream, Yealink, softphones).
 **Campos opcionais:**
 - `caller_id_name` (string)
 - `caller_id_num` (string, padrão: extension)
+- `outbound_cid` (string, ex: `"6133334444"`) — CID exibido ao destino em chamadas externas; sobrepõe o padrão do tronco. Se omitido, usa o CID padrão da conta do carrier.
+- `named_call_group` (string) — grupos de chamada separados por vírgula, nomes curtos sem sufixo de empresa (ex: `"comercial,financeiro"`). O arquivo PJSIP gerado acrescenta `-{company_id}` a cada nome. Se omitido, usa `default-{company_id}`.
+- `named_pickup_group` (string) — grupos de captura separados por vírgula, mesma lógica do `named_call_group` (ex: `"financeiro,suporte"`). Se omitido, usa `default-{company_id}`.
 - `transport` (string, padrão: transport-udp)
 - `codecs` (array, padrão: ["ulaw", "alaw", "gsm", "g722"])
 - `max_contacts` (int, 1-10, padrão: 2)
@@ -950,6 +953,9 @@ Perfil para **navegadores web** (Chrome, Firefox, Safari).
 **Campos opcionais:**
 - `caller_id_name` (string)
 - `caller_id_num` (string, padrão: extension)
+- `outbound_cid` (string, ex: `"6133334444"`) — CID exibido ao destino em chamadas externas; sobrepõe o padrão do tronco. Se omitido, usa o CID padrão da conta do carrier.
+- `named_call_group` (string) — grupos de chamada separados por vírgula, nomes curtos sem sufixo de empresa (ex: `"comercial,financeiro"`). O arquivo PJSIP gerado acrescenta `-{company_id}` a cada nome. Se omitido, usa `default-{company_id}`.
+- `named_pickup_group` (string) — grupos de captura separados por vírgula, mesma lógica do `named_call_group` (ex: `"financeiro,suporte"`). Se omitido, usa `default-{company_id}`.
 - `codecs` (array, padrão: ["opus", "ulaw", "alaw"])
 - `max_contacts` (int, 1-10, padrão: 5)
 - `qualify_frequency` (int, 0-300, padrão: 30)
@@ -1046,6 +1052,7 @@ curl -X POST "http://localhost/extension" \
 **⚠️ Nota**: `extension` e `profile` não podem ser alterados.
 
 ```bash
+# Atualizar nome e senha
 curl -X PUT "http://localhost/extension/1000" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
@@ -1053,6 +1060,24 @@ curl -X PUT "http://localhost/extension/1000" \
   -d '{
     "caller_id_name": "João Silva - Atualizado",
     "password": "novaSenha789"
+  }'
+
+# Definir CID de saída específico para o ramal
+curl -X PUT "http://localhost/extension/1001" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "outbound_cid": "6133334444"
+  }'
+
+# Remover CID de saída (volta a usar o padrão do tronco)
+curl -X PUT "http://localhost/extension/1001" \
+  -H "Authorization: Bearer token" \
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "outbound_cid": null
   }'
 ```
 
@@ -1083,6 +1108,70 @@ curl -X DELETE "http://localhost/extension/1000" \
 | **Max Contacts** | 2 | 5 |
 | **Qualify** | 60s | 30s |
 | **Casos de Uso** | Escritórios, telefones fixos | Home office, atendimento remoto |
+
+---
+
+### Isolamento Multi-tenant e CID de Saída
+
+#### Captura de Chamadas (named_call_group / named_pickup_group)
+
+Os campos armazenam **nomes curtos** no banco de dados. Na geração do arquivo PJSIP, o sistema acrescenta automaticamente `-{company_id}` a cada nome, garantindo isolamento entre empresas sem que o operador precise digitá-lo manualmente.
+
+**Por padrão** (campo omitido ou vazio), o ramal recebe `default-{company_id}`:
+
+```ini
+named_call_group=default-alianca
+named_pickup_group=default-alianca
+```
+
+**Com grupos personalizados**, envie os nomes curtos via API:
+
+```json
+{
+  "named_call_group":   "comercial,financeiro",
+  "named_pickup_group": "financeiro,suporte"
+}
+```
+
+Salvo no banco: `comercial,financeiro` / `financeiro,suporte`
+
+Config PJSIP gerado (company_id = `alianca`):
+```ini
+named_call_group=comercial-alianca,financeiro-alianca
+named_pickup_group=financeiro-alianca,suporte-alianca
+```
+
+**Regras de captura (`*8`) — exemplo com company_id `alianca`:**
+
+| Ramal | named_call_group (banco) | named_pickup_group (banco) | Config PJSIP gerado | Pode capturar chamadas de… |
+|-------|--------------------------|---------------------------|---------------------|---------------------------|
+| 1001 | `comercial` | `comercial` | `comercial-alianca` | Ramais do comercial |
+| 1002 | `financeiro` | `comercial,financeiro` | `financeiro-alianca` | Ramais de comercial ou financeiro |
+| 1003 | `suporte` | `suporte` | `suporte-alianca` | Apenas ramais do suporte |
+| 1004 | *(vazio)* | *(vazio)* | `default-alianca` | Ramais também no grupo default |
+
+> Ramais de empresas diferentes nunca se cruzam — o sufixo `-{company_id}` é único por empresa e acrescentado automaticamente pelo sistema.
+
+**Migration necessária** (executar uma única vez):
+```bash
+mysql -u aztell -p asterisk-api < database/migration_named_call_groups.sql
+```
+
+#### CID de Saída por Ramal (outbound_cid)
+
+O campo `outbound_cid` define o número exibido ao destino (pessoa chamada) quando o ramal realiza chamadas externas:
+
+| Cenário | Comportamento |
+|---------|---------------|
+| `outbound_cid` definido | O número configurado é enviado ao carrier antes do `Dial()` |
+| `outbound_cid` nulo / não definido | O carrier usa o CID padrão da conta (número do tronco) |
+
+**Pré-requisito no tronco**: o carrier precisa aceitar o número enviado. Verifique se o tronco está com `send_pai=yes` ou `send_rpid=yes` e se o carrier permite CID customizado para a conta.
+
+**Migration necessária** (executar uma única vez no servidor):
+```bash
+mysql -u aztell -p asterisk-api < database/migration_outbound_cid.sql
+```
 
 ---
 
@@ -1925,11 +2014,16 @@ Uma IVR é um menu interativo que permite aos chamadores navegar por opções us
 
 ```
 1. Chamada entra no DID mapeado para IVR
-2. Áudio de boas-vindas é reproduzido
-3. Sistema aguarda dígito DTMF (timeout configurável)
+2. Áudio de boas-vindas é reproduzido (Background — interrompível por DTMF)
+3. Sistema aguarda dígito(s) DTMF:
+   • 1 dígito  → opção do menu (ex: "1" para Comercial)
+   • 4 dígitos → discagem direta para ramal (ex: 1001)
+   • # + 2-6 dígitos → discagem direta para fila via shortcode (ex: #600)
 4. Dígito é processado e chamada roteada para destino
 5. Se inválido/timeout, comportamento configurável (repetir, hangup, outro destino)
 ```
+
+> **Discagem direta**: o caller pode digitar o número do ramal ou o shortcode da fila a qualquer momento durante a reprodução do áudio ou no período de espera — sem precisar navegar pelo menu. O timeout entre dígitos é de 3 segundos (após o último dígito digitado).
 
 ### Tipos de Ação (action_type)
 
@@ -2703,6 +2797,6 @@ curl -X GET "http://localhost/dids/by-type?type=ivr" \
 ---
 
 
-**Versão**: 1.8.1
-**Última atualização**: 2026-07-03
+**Versão**: 1.9.0
+**Última atualização**: 2026-08-10
 **By: Israel Azevedo**
