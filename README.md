@@ -1489,17 +1489,17 @@ curl -X GET "http://localhost/queue/suporte/members" \
 
 ### Adicionar Membro
 
-**Endpoint**: `POST /queue/{queue_name}/member`
+**Endpoint**: `POST /queue/{queue_name}/add-member`
 
 **Campos obrigatórios:**
 - `extension` (string)
 
 **Campos opcionais:**
 - `penalty` (int, padrão: 0)
-- `member_name` (string)
+- `member_name` (string, padrão: `Agent {extension}`)
 
 ```bash
-curl -X POST "http://localhost/queue/suporte/member" \
+curl -X POST "http://localhost/queue/suporte/add-member" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
@@ -1513,29 +1513,40 @@ curl -X POST "http://localhost/queue/suporte/member" \
 
 ### Remover Membro
 
-**Endpoint**: `DELETE /queue/{queue_name}/member/{extension}`
+**Endpoint**: `POST /queue/{queue_name}/remove-member`
+
+**Campos obrigatórios:**
+- `extension` (string)
 
 ```bash
-curl -X DELETE "http://localhost/queue/suporte/member/1000" \
+curl -X POST "http://localhost/queue/suporte/remove-member" \
   -H "Authorization: Bearer token" \
-  -H "X-Company-ID: empresa1"
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "extension": "1000"
+  }'
 ```
 
 ---
 
 ### Pausar Membro
 
-**Endpoint**: `POST /queue/{queue_name}/member/{extension}/pause`
+**Endpoint**: `POST /queue/{queue_name}/pause-member`
+
+**Campos obrigatórios:**
+- `extension` (string)
 
 **Campos opcionais:**
 - `reason` (string) - Motivo da pausa
 
 ```bash
-curl -X POST "http://localhost/queue/suporte/member/1000/pause" \
+curl -X POST "http://localhost/queue/suporte/pause-member" \
   -H "Authorization: Bearer token" \
   -H "X-Company-ID: empresa1" \
   -H "Content-Type: application/json" \
   -d '{
+    "extension": "1000",
     "reason": "Almoço"
   }'
 ```
@@ -1544,12 +1555,19 @@ curl -X POST "http://localhost/queue/suporte/member/1000/pause" \
 
 ### Despausar Membro
 
-**Endpoint**: `POST /queue/{queue_name}/member/{extension}/unpause`
+**Endpoint**: `POST /queue/{queue_name}/unpause-member`
+
+**Campos obrigatórios:**
+- `extension` (string)
 
 ```bash
-curl -X POST "http://localhost/queue/suporte/member/1000/unpause" \
+curl -X POST "http://localhost/queue/suporte/unpause-member" \
   -H "Authorization: Bearer token" \
-  -H "X-Company-ID: empresa1"
+  -H "X-Company-ID: empresa1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "extension": "1000"
+  }'
 ```
 
 ---
@@ -2797,6 +2815,6 @@ curl -X GET "http://localhost/dids/by-type?type=ivr" \
 ---
 
 
-**Versão**: 1.9.0
-**Última atualização**: 2026-08-10
+**Versão**: 1.10.0
+**Última atualização**: 2026-10-05
 **By: Israel Azevedo**
