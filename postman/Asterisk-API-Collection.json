@@ -434,7 +434,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"extension\": \"1000\",\n    \"password\": \"senha123\",\n    \"caller_id_name\": \"João Silva\",\n    \"caller_id_num\": \"1000\",\n    \"context\": \"default\",\n    \"max_contacts\": 2\n}"
+              "raw": "{\n    \"extension\": \"1000\",\n    \"password\": \"senha123\",\n    \"caller_id_name\": \"João Silva\",\n    \"caller_id_num\": \"1000\",\n    \"outbound_cid\": \"6133334444\",\n    \"named_call_group\": \"comercial,financeiro\",\n    \"named_pickup_group\": \"financeiro,suporte\",\n    \"context\": \"default\",\n    \"max_contacts\": 2\n}"
             },
             "url": {
               "raw": "{{api_url}}/extension",
@@ -473,7 +473,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"password\": \"nova_senha456\",\n    \"caller_id_name\": \"João da Silva\",\n    \"context\": \"interno\"\n}"
+              "raw": "{\n    \"password\": \"nova_senha456\",\n    \"caller_id_name\": \"João da Silva\",\n    \"outbound_cid\": \"6133334444\",\n    \"named_call_group\": \"comercial,financeiro\",\n    \"named_pickup_group\": \"financeiro,suporte\",\n    \"context\": \"interno\"\n}"
             },
             "url": {
               "raw": "{{api_url}}/extension/1000",
@@ -919,6 +919,38 @@
     {
       "name": "Queue Members (Membros)",
       "item": [
+        {
+          "name": "List Members of Queue",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Company-ID",
+                "value": "{{company_id}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/queue/suporte/members",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "queue",
+                "suporte",
+                "members"
+              ]
+            },
+            "description": "Lista os membros (ramais) cadastrados na fila"
+          },
+          "response": []
+        },
         {
           "name": "Add Member to Queue",
           "request": {
