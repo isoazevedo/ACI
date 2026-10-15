@@ -2034,14 +2034,29 @@ Uma IVR é um menu interativo que permite aos chamadores navegar por opções us
 1. Chamada entra no DID mapeado para IVR
 2. Áudio de boas-vindas é reproduzido (Background — interrompível por DTMF)
 3. Sistema aguarda dígito(s) DTMF:
-   • 1 dígito  → opção do menu (ex: "1" para Comercial)
-   • 4 dígitos → discagem direta para ramal (ex: 1001)
+   • 1 dígito (0-9, * ou #) → opção do menu (ex: "1" para Comercial)
+   • 2+ dígitos → discagem direta para ramal (ex: 1001), se allow_direct_dial = true
    • # + 2-6 dígitos → discagem direta para fila via shortcode (ex: #600)
 4. Dígito é processado e chamada roteada para destino
 5. Se inválido/timeout, comportamento configurável (repetir, hangup, outro destino)
 ```
 
-> **Discagem direta**: o caller pode digitar o número do ramal ou o shortcode da fila a qualquer momento durante a reprodução do áudio ou no período de espera — sem precisar navegar pelo menu. O timeout entre dígitos é de 3 segundos (após o último dígito digitado).
+> **Discagem direta**: o caller pode digitar o shortcode da fila (ex: `#600`) a qualquer momento durante a reprodução do áudio ou no período de espera, sem precisar navegar pelo menu. O timeout entre dígitos é de 2 segundos (após o último dígito digitado).
+
+### Discagem Direta para Ramal (`allow_direct_dial`)
+
+Com `allow_direct_dial: true` na IVR, o caller também pode digitar o número de um ramal (2 ou mais dígitos) durante o menu para ser transferido diretamente.
+
+| Situação | Comportamento |
+|----------|---------------|
+| Ramal ativo da mesma empresa da IVR | Chamada é transferida para o ramal |
+| Ramal inexistente, inativo ou de outra empresa | Tratado como entrada inválida (`invalid_destination_type`) |
+| Ramal ocupado, não atende (50s) ou offline | Tratado como entrada inválida (`invalid_destination_type`) |
+| `allow_direct_dial: false` (padrão) | Apenas opções do menu e shortcodes de fila |
+
+> ⚠️ **Tempo de resposta das opções**: com a discagem direta habilitada, a IVR não sabe de imediato se o dígito "1" é a opção 1 ou o início do ramal 1001. Por isso, após o primeiro dígito ela aguarda o timeout entre dígitos (2s) antes de executar a opção. Sem discagem direta, as opções 0-9 respondem imediatamente.
+
+> **Requisitos**: executar a migration `database/migration_ivr_direct_dial.sql` e publicar o `extensions.conf` atualizado (contexto `ivr-handler-direct`) e o AGI `ivr-handler.php`.
 
 ### Tipos de Ação (action_type)
 
@@ -2090,6 +2105,7 @@ curl -X GET "http://localhost/ivrs" \
       "timeout_destination_type": "queue",
       "timeout_destination": "suporte",
       "invalid_destination_type": "repeat",
+      "allow_direct_dial": 0,
       "active": 1,
       "created_at": "2026-02-04 10:00:00"
     }
@@ -2127,6 +2143,7 @@ curl -X GET "http://localhost/ivrs/1" \
     "timeout_destination": "suporte",
     "invalid_destination_type": "repeat",
     "invalid_destination": null,
+    "allow_direct_dial": 0,
     "active": 1,
     "options": [
       {
@@ -2176,6 +2193,7 @@ curl -X GET "http://localhost/ivrs/1" \
 - `timeout_destination` (string)
 - `invalid_destination_type` (enum, padrão: repeat)
 - `invalid_destination` (string)
+- `allow_direct_dial` (bool, padrão: false) - permite discar o número de um ramal da empresa durante o menu
 - `options` (array) - opções do menu
 
 **Exemplo Completo:**
@@ -2193,6 +2211,7 @@ curl -X POST "http://localhost/ivrs" \
     "timeout_destination_type": "queue",
     "timeout_destination": "suporte",
     "invalid_destination_type": "repeat",
+    "allow_direct_dial": true,
     "options": [
       {
         "digit": "1",
@@ -2257,6 +2276,11 @@ curl -X PUT "http://localhost/ivrs/1" \
     "timeout": 10,
     "max_retries": 5
   }'
+```
+
+**Habilitar discagem direta para ramal:**
+```bash
+curl -X PUT "http://localhost/ivrs/1"   -H "Authorization: Bearer token"   -H "X-Company-ID: empresa1"   -H "Content-Type: application/json"   -d '{"allow_direct_dial": true}'
 ```
 
 **Atualizar substituindo todas as opções:**
@@ -2815,6 +2839,6 @@ curl -X GET "http://localhost/dids/by-type?type=ivr" \
 ---
 
 
-**Versão**: 1.10.0
-**Última atualização**: 2026-10-05
+**Versão**: 1.11.0
+**Última atualização**: 2026-10-15
 **By: Israel Azevedo**
